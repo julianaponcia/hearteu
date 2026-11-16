@@ -1,0 +1,4846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Endless Heart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Caveat:wght@500;600;700&family=Great+Vibes&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --body-font: 'Poppins', sans-serif;
+      --script-font: 'Great Vibes', cursive;
+      --receipt-font: 'Courier Prime', monospace;
+      --deep-purple: #3d0066;
+      --mid-purple: #510087;
+      --gold: #fdc500;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, #510087 0%, #3d0066 100%);
+      color: #ffffff;
+      font-family: var(--body-font);
+      overflow-x: hidden;
+    }
+
+    .screen {
+      display: none;
+      width: 100vw;
+      min-height: 100vh;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .heart-wrapper {
+      animation: heartbeat 1.25s infinite ease-in-out;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading-text {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      color: #ffffff;
+      opacity: 0.9;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    #screen-constellation {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #canvas {
+      display: block;
+      width: 100%;
+      max-width: 720px;
+      height: auto;
+      aspect-ratio: 660 / 450;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 360px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 40px 32px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+      color: var(--deep-purple);
+    }
+
+    .login-box h2 {
+      margin: 0 0 24px 0;
+      color: var(--deep-purple);
+      font-weight: 600;
+      font-size: 21px;
+      letter-spacing: -0.3px;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid rgba(81, 0, 135, 0.25);
+      background: #fafafa;
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: var(--body-font);
+      color: var(--deep-purple);
+      outline: none;
+      text-align: center;
+      margin-bottom: 14px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .login-box input::placeholder {
+      color: rgba(61, 0, 102, 0.35);
+    }
+
+    .login-box input:focus {
+      border-color: var(--mid-purple);
+      background: #ffffff;
+    }
+
+    .login-box button {
+      width: 100%;
+      background-color: var(--mid-purple);
+      color: #ffffff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14.5px;
+      font-weight: 500;
+      font-family: var(--body-font);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .login-box button:hover {
+      background-color: var(--deep-purple);
+    }
+
+    #error-msg {
+      margin-top: 16px;
+      color: #b00020;
+      font-size: 13px;
+      min-height: 18px;
+      line-height: 1.45;
+    }
+
+    #screen-app {
+      width: 100vw;
+      min-height: 100vh;
+      background-color: #ffffff;
+      background-image: url('images/bg.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0;
+      color: #1f1429;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .edge-bar {
+      width: 100%;
+      height: 28px;
+      background: var(--deep-purple);
+      flex-shrink: 0;
+      z-index: 7;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .edge-bar.bottom {
+      height: 36px;
+    }
+
+    .star-belt-track {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      animation: starBeltFlow 22s linear infinite;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .edge-bar.bottom .star-belt-track {
+      animation-direction: reverse;
+    }
+
+    .star-belt-chunk {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding-right: 28px;
+    }
+
+    .belt-star {
+      color: var(--gold);
+      font-size: 11px;
+      opacity: 0.85;
+      text-shadow: 0 0 6px rgba(253, 197, 0, 0.65);
+    }
+
+    .belt-star.tiny {
+      font-size: 8px;
+      opacity: 0.6;
+    }
+
+    @keyframes starBeltFlow {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .veggie-celebration-popup {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      padding: 20px;
+    }
+
+    .veggie-celebration-popup.active-veggie {
+      display: flex;
+    }
+
+    .veggie-celebration-card {
+      background: radial-gradient(circle at top, #510087 0%, #3d0066 100%);
+      color: var(--gold);
+      border: 3px solid var(--gold);
+      border-radius: 26px;
+      padding: 24px 32px;
+      text-align: center;
+      font-family: var(--body-font);
+      font-size: clamp(24px, 5vw, 42px);
+      font-weight: 800;
+      letter-spacing: 1px;
+      line-height: 1.2;
+      text-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 20px 50px rgba(31, 0, 54, 0.55);
+      animation: veggiePopBounce 2.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes veggiePopBounce {
+      0% { opacity: 0; transform: scale(0.45) rotate(-4deg); }
+      16% { opacity: 1; transform: scale(1.08) rotate(2deg); }
+      28% { transform: scale(0.98) rotate(-1deg); }
+      40% { transform: scale(1) rotate(0deg); }
+      82% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.9) translateY(-16px); }
+    }
+
+    .top-pill-nav {
+      position: relative;
+      z-index: 6;
+      width: 100%;
+      max-width: 1180px;
+      padding: 16px 24px 4px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nav-pill-track {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(81, 0, 135, 0.14);
+      border-radius: 999px;
+      padding: 4px;
+      box-shadow: 0 4px 16px rgba(61, 0, 102, 0.06);
+    }
+
+    .nav-slider {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 4px;
+      border-radius: 999px;
+      background: var(--mid-purple);
+      box-shadow: 0 4px 12px rgba(81, 0, 135, 0.25);
+      transition: transform 0.34s cubic-bezier(0.34, 1.36, 0.64, 1), width 0.34s cubic-bezier(0.34, 1.36, 0.64, 1);
+      z-index: 1;
+    }
+
+    .nav-tab-btn {
+      position: relative;
+      z-index: 2;
+      background: transparent;
+      color: #1f1429;
+      border: none;
+      border-radius: 999px;
+      padding: 5px 16px;
+      font-family: var(--body-font);
+      font-size: 12px;
+      font-weight: 600;
+      font-style: italic;
+      letter-spacing: 0.5px;
+      text-transform: lowercase;
+      cursor: pointer;
+      transition: color 0.25s ease;
+    }
+
+    .nav-tab-btn:hover {
+      color: var(--mid-purple);
+    }
+
+    .nav-tab-btn.active-tab {
+      color: #ffffff;
+    }
+
+    .tab-view {
+      display: none;
+      width: 100%;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 3;
+    }
+
+    .tab-view.active-view {
+      display: flex;
+    }
+
+    .thread-stage {
+      position: relative;
+      width: 100%;
+      max-width: 1080px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+    }
+
+    .thread-scene {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      max-height: calc(100vh - 130px);
+    }
+
+    .stitched-bottom-label {
+      position: absolute;
+      bottom: 11%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      font-family: var(--body-font);
+      font-size: clamp(13px, 1.45vw, 17px);
+      font-weight: 600;
+      font-style: italic;
+      color: #1f1429;
+      letter-spacing: 0.4px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .oval-frame {
+      position: absolute;
+      width: 21%;
+      aspect-ratio: 3 / 4.25;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #2b0947;
+      border: 3px solid #510087;
+      box-shadow: 0 0 0 1.5px rgba(81, 0, 135, 0.22), 0 14px 32px rgba(61, 0, 102, 0.14);
+      z-index: 3;
+    }
+
+    .oval-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(81, 0, 135, 0.24);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .oval-left {
+      top: 22%;
+      left: 16%;
+    }
+
+    .oval-right {
+      top: 22%;
+      right: 16%;
+    }
+
+    .oval-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%) sepia(42%) hue-rotate(246deg) saturate(210%) contrast(1.06);
+      display: block;
+    }
+
+    .purple-thread-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .thread-path {
+      fill: none;
+      stroke: #510087;
+      stroke-width: 2.1;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    
+    .dates-split-wrapper {
+      width: 100%;
+      max-width: 1200px;
+      padding: 16px 28px 42px 28px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 36px;
+    }
+
+    .editorial-dates-left {
+      flex: 1.05;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .dates-hero-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: -2px;
+      animation: fadeFloatIn 0.85s ease both;
+    }
+
+    .filigree-svg {
+      width: 68px;
+      height: 22px;
+      stroke: var(--mid-purple);
+      fill: none;
+      stroke-width: 1.5;
+      opacity: 0.78;
+    }
+
+    .dates-script-title {
+      font-family: var(--script-font);
+      font-size: clamp(34px, 4.2vw, 46px);
+      font-weight: 400;
+      color: var(--deep-purple);
+      line-height: 1;
+      margin: 0;
+    }
+
+    .editorial-card {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      border: 2px solid var(--deep-purple);
+      border-radius: 24px;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      box-shadow: 0 12px 28px rgba(61, 0, 102, 0.08);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .editorial-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px rgba(61, 0, 102, 0.13);
+    }
+
+    .editorial-card.date-step {
+      cursor: pointer;
+    }
+
+    .editorial-card.date-step.locked-date,
+    .more-to-come-box.locked-date {
+      display: none;
+    }
+
+    .editorial-card.date-step.revealed-date,
+    .more-to-come-box.revealed-date {
+      animation: dateRevealPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes dateRevealPop {
+      0% {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .tap-next-hint {
+      font-size: 9.5px;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--mid-purple);
+      margin-top: 6px;
+      opacity: 0.85;
+      letter-spacing: 0.3px;
+    }
+
+    .editorial-photo-box {
+      width: 42%;
+      aspect-ratio: 4 / 3.2;
+      border-radius: 18px;
+      border: 2px solid var(--deep-purple);
+      overflow: hidden;
+      background: #2b0947;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .editorial-photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .editorial-copy {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4px 4px;
+    }
+
+    .editorial-days-big {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--mid-purple);
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+
+    .editorial-days-big span {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--deep-purple);
+    }
+
+    .editorial-sub-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--deep-purple);
+      margin-top: 5px;
+      letter-spacing: 0.3px;
+    }
+
+    .editorial-date-small {
+      font-size: 10.5px;
+      font-weight: 500;
+      font-style: italic;
+      color: #6a567d;
+      margin-top: 2px;
+      letter-spacing: 0.4px;
+    }
+
+    .together-highlight-box {
+      margin-top: 4px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #faf6ff;
+      border: 1.5px solid var(--mid-purple);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .together-live-numbers {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      color: var(--deep-purple);
+      line-height: 1.35;
+    }
+
+    .together-live-numbers span {
+      font-size: 17px;
+      color: var(--mid-purple);
+      text-decoration: underline;
+      text-decoration-color: var(--gold);
+      text-decoration-thickness: 2.5px;
+      text-underline-offset: 2px;
+    }
+
+    .together-exact-stamp {
+      font-size: 10px;
+      font-weight: 600;
+      font-style: italic;
+      color: #6a567d;
+    }
+
+    .right-heart-medallion {
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid var(--deep-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--mid-purple);
+      font-size: 12px;
+      box-shadow: 0 4px 10px rgba(61, 0, 102, 0.14);
+      z-index: 4;
+    }
+
+    .more-to-come-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      border: 2px dashed var(--deep-purple);
+      border-radius: 24px;
+      padding: 18px 22px;
+      text-align: center;
+      box-shadow: 0 10px 24px rgba(61, 0, 102, 0.06);
+    }
+
+    .more-to-come-script {
+      font-family: var(--script-font);
+      font-size: clamp(28px, 3.6vw, 38px);
+      color: var(--deep-purple);
+      line-height: 1.1;
+    }
+
+    
+    .notebook-right-column {
+      flex: 0.78;
+      max-width: 390px;
+      width: 100%;
+      margin-top: 58px;
+      position: sticky;
+      top: 24px;
+      animation: fadeFloatIn 0.85s ease 0.2s both;
+    }
+
+    @media (max-width: 920px) {
+      .notebook-right-column {
+        margin-top: 12px;
+      }
+    }
+
+    .notebook-cover-board {
+      position: relative;
+      background: #fffdf9;
+      border: 2px solid var(--deep-purple);
+      border-radius: 8px 16px 16px 8px;
+      padding: 0;
+      box-shadow: 8px 12px 26px rgba(61, 0, 102, 0.14);
+    }
+
+    .notebook-sheet {
+      position: relative;
+      background-color: #fffdf9;
+      background-image:
+        linear-gradient(90deg, transparent 46px, rgba(216, 112, 147, 0.45) 46px, rgba(216, 112, 147, 0.45) 47.5px, transparent 47.5px),
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          transparent 27px,
+          rgba(81, 0, 135, 0.18) 27px,
+          rgba(81, 0, 135, 0.18) 28px
+        );
+      background-position: 0 0, 0 24px;
+      border-radius: 6px 14px 14px 6px;
+      min-height: 460px;
+      padding: 24px 22px 28px 60px;
+      text-align: left;
+    }
+
+    .notebook-holes-strip {
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      left: 13px;
+      width: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .notebook-hole {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #f5effa;
+      border: 1.5px solid var(--deep-purple);
+      position: relative;
+    }
+
+    .notebook-hole::before {
+      content: "";
+      position: absolute;
+      left: -17px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 3.5px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #9d8eb0 0%, #e9e1f2 55%, #510087 100%);
+    }
+
+    .notebook-ruled-text {
+      font-family: 'Caveat', cursive;
+      font-size: 24px;
+      font-weight: 600;
+      color: #2b1d38;
+      line-height: 28px;
+      margin: 0;
+    }
+
+    
+    .cookie-view-wrapper {
+      width: 100%;
+      max-width: 720px;
+      padding: 16px 20px 36px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cookie-stage {
+      position: relative;
+      width: 100%;
+      max-width: 620px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    #fortune {
+      position: absolute;
+      width: 270px;
+      max-width: 68%;
+      z-index: 3;
+      transition: transform 0.1s ease, opacity 0.2s ease;
+    }
+
+    .shaking {
+      animation: shake 0.4s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-6deg) scale(1.03); }
+      50% { transform: rotate(6deg) scale(1.05); }
+      75% { transform: rotate(-4deg) scale(1.03); }
+    }
+
+    .cookie-half {
+      position: absolute;
+      width: 145px;
+      max-width: 34%;
+      z-index: 2;
+      opacity: 0;
+      transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+    }
+
+    #cookie1 { transform: translateX(-20px); }
+    #cookie2 { transform: translateX(20px); }
+
+    .fortune-paper {
+      position: absolute;
+      z-index: 4;
+      width: 0px;
+      min-height: 74px;
+      background: #ffffff;
+      border: 1.5px solid rgba(81, 0, 135, 0.28);
+      border-radius: 6px;
+      box-shadow: 0 10px 26px rgba(61, 0, 102, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      opacity: 0;
+      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s, opacity 0.3s ease 0.15s;
+    }
+
+    .fortune-text {
+      width: 320px;
+      max-width: 78vw;
+      color: var(--deep-purple);
+      font-family: var(--body-font);
+      font-size: 13.5px;
+      font-weight: 600;
+      font-style: italic;
+      line-height: 1.45;
+      letter-spacing: 0.2px;
+      padding: 14px 20px;
+      text-align: center;
+    }
+
+    .cookie-stage.cracked #fortune {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .cookie-stage.cracked .cookie-half {
+      opacity: 1;
+    }
+
+    .cookie-stage.cracked #cookie1 {
+      transform: translateX(-185px) rotate(-14deg);
+    }
+
+    .cookie-stage.cracked #cookie2 {
+      transform: translateX(185px) rotate(14deg);
+    }
+
+    .cookie-stage.cracked .fortune-paper {
+      width: min(350px, 84vw);
+      opacity: 1;
+    }
+
+    .cookie-hint-text {
+      font-size: 11.5px;
+      font-style: italic;
+      color: #6a567d;
+      margin-top: 2px;
+      margin-bottom: 14px;
+    }
+
+    .new-cookie-btn {
+      padding: 10px 24px;
+      font-family: var(--body-font);
+      font-size: 13px;
+      font-weight: 600;
+      font-style: italic;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      background: var(--mid-purple);
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      box-shadow: 0 6px 16px rgba(81, 0, 135, 0.24);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .new-cookie-btn:hover {
+      background: var(--deep-purple);
+      transform: translateY(-1px);
+    }
+
+    
+    .jar-view-wrapper {
+      width: 100%;
+      max-width: 1040px;
+      padding: 12px 20px 32px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .jar-title-script {
+      font-family: var(--script-font);
+      font-size: clamp(34px, 4.2vw, 46px);
+      font-weight: 400;
+      color: var(--deep-purple);
+      line-height: 1;
+      margin: 0;
+    }
+
+    .jar-workspace {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .jar-stage {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      aspect-ratio: 3 / 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .jar-base-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      pointer-events: none;
+      transition: transform 0.25s ease;
+      z-index: 2;
+    }
+
+    .jar-overlay-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      pointer-events: none;
+      opacity: 0.2;
+      z-index: 8;
+      transition: transform 0.25s ease;
+    }
+
+    .jar-stage:hover .jar-base-img,
+    .jar-stage:hover .jar-overlay-img {
+      transform: scale(1.02);
+    }
+
+    .jar-shake {
+      animation: jarWiggle 0.45s ease-in-out;
+    }
+
+    @keyframes jarWiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-4deg); }
+      50% { transform: rotate(4deg); }
+      75% { transform: rotate(-2.5deg); }
+    }
+
+    .jar-action-pill {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 12;
+      background: rgba(61, 0, 102, 0.92);
+      color: #ffffff;
+      border: 1.5px solid #ffffff;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-family: var(--body-font);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .jar-action-pill:hover {
+      background: var(--mid-purple);
+      transform: scale(1.05);
+    }
+
+    
+    .jar-slips-container {
+      position: absolute;
+      left: 24%;
+      right: 24%;
+      bottom: 13%;
+      height: 48%;
+      z-index: 5;
+      pointer-events: auto;
+    }
+
+    .jar-folded-slip {
+      position: absolute;
+      width: 38px;
+      height: 38px;
+      cursor: grab;
+      transition: transform 0.22s ease, filter 0.22s ease, opacity 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 2px 3px rgba(61, 0, 102, 0.28));
+    }
+
+    .jar-folded-slip svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .jar-folded-slip:hover {
+      transform: translateY(-6px) scale(1.16) !important;
+      z-index: 15 !important;
+      filter: drop-shadow(0 6px 10px rgba(61, 0, 102, 0.38));
+    }
+
+    .jar-folded-slip.pulling-out {
+      animation: pullPaperOut 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      z-index: 25 !important;
+    }
+
+    @keyframes pullPaperOut {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      60% {
+        transform: translateY(-135px) rotate(6deg) scale(1.45);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-165px) rotate(0deg) scale(1.8);
+        opacity: 0;
+      }
+    }
+
+    
+    .jar-right-column {
+      width: 340px;
+      max-width: 92vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .unfolded-note-stage {
+      width: 100%;
+      min-height: 155px;
+      border-radius: 20px;
+      border: 2px dashed rgba(81, 0, 135, 0.35);
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(8px);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .unfolded-note-stage.drop-active {
+      border-style: solid;
+      border-color: var(--mid-purple);
+      background: rgba(253, 197, 0, 0.14);
+      transform: scale(1.02);
+    }
+
+    .unfolded-paper-card {
+      width: 100%;
+      min-height: 112px;
+      border-radius: 14px;
+      border: 2px solid var(--deep-purple);
+      padding: 18px 20px;
+      box-shadow: 0 10px 24px rgba(61, 0, 102, 0.14);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      animation: unfoldPaperAnim 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes unfoldPaperAnim {
+      0% {
+        opacity: 0;
+        transform: scaleY(0.18) scaleX(0.55) translateY(24px);
+      }
+      100% {
+        opacity: 1;
+        transform: scaleY(1) scaleX(1) translateY(0);
+      }
+    }
+
+    .unfolded-paper-text {
+      font-family: var(--body-font);
+      font-size: 14px;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--deep-purple);
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .unfolded-paper-tag {
+      margin-top: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      font-style: italic;
+      color: rgba(61, 0, 102, 0.65);
+    }
+
+    .jar-empty-drop-hint {
+      font-size: 12px;
+      font-style: italic;
+      color: #6a567d;
+      text-align: center;
+      margin: 0;
+    }
+
+    
+    .jar-add-goal-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      border: 2px solid var(--deep-purple);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 10px 24px rgba(61, 0, 102, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .jar-goal-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid rgba(81, 0, 135, 0.28);
+      border-radius: 10px;
+      font-family: var(--body-font);
+      font-size: 12.5px;
+      color: var(--deep-purple);
+      background: #faf6ff;
+      outline: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .jar-goal-input::placeholder {
+      color: rgba(61, 0, 102, 0.45);
+      font-style: italic;
+    }
+
+    .jar-goal-input:focus {
+      border-color: var(--mid-purple);
+      background: #ffffff;
+    }
+
+    .jar-goal-bottom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .jar-palette-dots {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .jar-color-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(61, 0, 102, 0.35);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      padding: 0;
+    }
+
+    .jar-color-dot.selected-color {
+      transform: scale(1.22);
+      border: 2px solid var(--deep-purple);
+      box-shadow: 0 2px 6px rgba(61, 0, 102, 0.28);
+    }
+
+    .jar-add-btn {
+      padding: 7px 14px;
+      background: var(--mid-purple);
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      font-family: var(--body-font);
+      font-size: 11px;
+      font-weight: 600;
+      font-style: italic;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .jar-add-btn:hover {
+      background: var(--deep-purple);
+      transform: translateY(-1px);
+    }
+
+    .jar-slip-fly-in {
+      animation: dropIntoJar 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes dropIntoJar {
+      0% {
+        opacity: 0;
+        transform: translateY(-140px) rotate(-18deg) scale(1.25);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    
+    .fridge-view-wrapper {
+      width: 100%;
+      max-width: 1120px;
+      padding: 12px 20px 32px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .fridge-door-trigger {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      cursor: pointer;
+    }
+
+    .fridge-handle-badge {
+      position: absolute;
+      top: 43%;
+      left: -34px;
+      transform: translateY(-50%);
+      z-index: 16;
+      background: rgba(61, 0, 102, 0.94);
+      color: #ffffff;
+      border: 1.5px solid rgba(255, 255, 255, 0.92);
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-family: var(--body-font);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+      transition: transform 0.2s ease, background 0.2s ease;
+      pointer-events: auto;
+      white-space: nowrap;
+    }
+
+    .fridge-handle-badge:hover {
+      background: var(--mid-purple);
+      transform: translateY(-50%) scale(1.06);
+    }
+
+    @media (max-width: 520px) {
+      .fridge-handle-badge {
+        left: 6px;
+      }
+    }
+
+    .fridge-in-controls {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 15;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 92%;
+      pointer-events: auto;
+    }
+
+    .fridge-mini-btn {
+      padding: 6px 11px;
+      font-family: var(--body-font);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 999px;
+      border: 1.5px solid var(--deep-purple);
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--deep-purple);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .fridge-mini-btn:hover {
+      background: var(--mid-purple);
+      color: #ffffff;
+      border-color: var(--mid-purple);
+    }
+
+    .fridge-mini-btn.accent {
+      background: var(--mid-purple);
+      color: #ffffff;
+      border-color: var(--mid-purple);
+    }
+
+    .fridge-mini-btn.accent:hover {
+      background: var(--deep-purple);
+      border-color: var(--deep-purple);
+    }
+
+    .fridge-workspace {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .fridge-stage {
+      position: relative;
+      width: 100%;
+      max-width: 410px;
+      aspect-ratio: 576 / 1024;
+      user-select: none;
+      animation: fadeFloatIn 0.8s ease both;
+      flex-shrink: 0;
+    }
+
+    .fridge-base-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+      border-radius: 14px;
+    }
+
+    .fridge-photo {
+      position: absolute;
+      overflow: hidden;
+      background: #ffffff;
+      border: 2px solid #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.26);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      cursor: pointer;
+    }
+
+    .fridge-photo:hover {
+      transform: scale(1.04);
+      z-index: 12 !important;
+      box-shadow: 0 10px 22px rgba(61, 0, 102, 0.35);
+    }
+
+    .fridge-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    
+    .fp-1 {
+      top: 11.8%;
+      left: 25.0%;
+      width: 17.5%;
+      height: 12.1%;
+      z-index: 2;
+    }
+
+    
+    .fp-2 {
+      top: 8.0%;
+      left: 50.2%;
+      width: 16.8%;
+      height: 10.6%;
+      z-index: 2;
+    }
+
+    
+    .fp-3 {
+      top: 21.4%;
+      left: 37.3%;
+      width: 29.7%;
+      height: 10.6%;
+      z-index: 3;
+    }
+
+    
+    .fp-4 {
+      top: 47.0%;
+      left: 27.1%;
+      width: 29.5%;
+      height: 10.6%;
+      z-index: 2;
+    }
+
+    
+    .fp-5 {
+      top: 60.4%;
+      left: 27.6%;
+      width: 29.5%;
+      height: 10.6%;
+      z-index: 2;
+    }
+
+    
+    .fp-6 {
+      top: 53.3%;
+      left: 61.6%;
+      width: 16.8%;
+      height: 10.7%;
+      z-index: 2;
+    }
+
+    
+    .fp-7 {
+      top: 67.8%;
+      left: 51.6%;
+      width: 17.4%;
+      height: 11.4%;
+      z-index: 3;
+    }
+
+    
+    .fridge-magnet {
+      position: absolute;
+      pointer-events: none;
+      z-index: 6;
+      filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.28));
+    }
+
+    .mag-japan-flag {
+      top: 22.1%;
+      left: 32.0%;
+      width: 10.2%;
+      aspect-ratio: 3 / 2;
+      background: #ffffff;
+      border-radius: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mag-japan-flag::after {
+      content: "";
+      width: 36%;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background: #dc2626;
+    }
+
+    .mag-cat-red {
+      top: 6.4%;
+      left: 65.4%;
+      width: 8.6%;
+      aspect-ratio: 3 / 4;
+      background: #dc2626;
+      border-radius: 2px;
+      transform: rotate(-22deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(9px, 2vw, 13px);
+    }
+
+    .mag-girls-sticker {
+      top: 29.8%;
+      left: 59.8%;
+      background: #e5e7eb;
+      color: #4b5563;
+      border: 1.5px solid #ffffff;
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-family: var(--script-font);
+      font-size: clamp(8px, 1.8vw, 11px);
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+      transform: rotate(-4deg);
+    }
+
+    .mag-chibi-pin {
+      top: 50.2%;
+      left: 58.6%;
+      width: 8.2%;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background: #1e1b4b;
+      border: 1.5px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(9px, 2vw, 13px);
+      z-index: 7;
+    }
+
+    
+    .open-fridge-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: auto;
+    }
+
+    .shelf-slot {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 9.8%;
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      border: 1.5px dashed rgba(81, 0, 135, 0.28);
+      background: rgba(255, 255, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(18px, 4.1vw, 25px);
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+
+    .shelf-slot.drag-over {
+      background: rgba(253, 197, 0, 0.42);
+      border-color: var(--mid-purple);
+      border-style: solid;
+      transform: translate(-50%, -50%) scale(1.14);
+    }
+
+    .shelf-slot.has-item {
+      border-color: transparent;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .slot-remove-x {
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--deep-purple);
+      color: #ffffff;
+      border: 1.5px solid #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      z-index: 9;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .slot-remove-x:hover {
+      background: #b00020;
+      transform: scale(1.15);
+    }
+
+    .slot-action-bar {
+      position: absolute;
+      bottom: -38px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.98);
+      border: 2px solid var(--deep-purple);
+      border-radius: 999px;
+      padding: 5px 9px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.34);
+      white-space: nowrap;
+      pointer-events: auto;
+      touch-action: manipulation;
+    }
+
+    .slot-act-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-family: var(--body-font);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      line-height: 1.1;
+      touch-action: manipulation;
+    }
+
+    .slot-act-btn.eat-btn {
+      background: var(--mid-purple);
+      color: #ffffff;
+    }
+
+    .slot-act-btn.eat-btn:hover {
+      background: var(--deep-purple);
+    }
+
+    .slot-act-btn.throw-btn {
+      background: #f3e8ff;
+      color: var(--deep-purple);
+    }
+
+    .slot-act-btn.throw-btn:hover {
+      background: #fee2e2;
+      color: #b00020;
+    }
+
+    .fridge-mini-toast {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--deep-purple);
+      border: 1.5px solid var(--deep-purple);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-family: var(--body-font);
+      font-size: 11px;
+      font-weight: 700;
+      font-style: italic;
+      box-shadow: 0 4px 14px rgba(61, 0, 102, 0.2);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .fridge-mini-toast.show-toast {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    
+    .grocery-cart-panel {
+      width: 290px;
+      max-width: 92vw;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border: 2px solid var(--deep-purple);
+      border-radius: 22px;
+      padding: 18px 18px 20px 18px;
+      box-shadow: 0 14px 30px rgba(61, 0, 102, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      animation: fadeFloatIn 0.4s ease both;
+    }
+
+    .cart-header-title {
+      font-family: var(--script-font);
+      font-size: 34px;
+      color: var(--deep-purple);
+      line-height: 1;
+      margin: 0;
+    }
+
+    .cart-sub-hint {
+      font-size: 11px;
+      font-style: italic;
+      color: #6a567d;
+      margin: -4px 0 2px 0;
+    }
+
+    .cart-items-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: #faf6ff;
+      border: 1.5px dashed rgba(81, 0, 135, 0.25);
+      border-radius: 16px;
+      padding: 12px;
+      min-height: 160px;
+    }
+
+    .cart-emoji-item {
+      aspect-ratio: 1 / 1;
+      background: #ffffff;
+      border: 1.5px solid rgba(81, 0, 135, 0.18);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+      cursor: grab;
+      user-select: none;
+      box-shadow: 0 3px 8px rgba(61, 0, 102, 0.07);
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+    }
+
+    .cart-emoji-item:hover {
+      transform: translateY(-2px) scale(1.06);
+      border-color: var(--mid-purple);
+      box-shadow: 0 6px 14px rgba(61, 0, 102, 0.16);
+    }
+
+    .cart-emoji-item.selected-touch {
+      border: 2px solid var(--gold);
+      background: #fffbeb;
+      transform: scale(1.08);
+    }
+
+    .cart-emoji-item.placed-in-fridge {
+      opacity: 0.28;
+      pointer-events: none;
+      filter: grayscale(80%);
+    }
+
+    
+    .receipt-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(31, 10, 48, 0.58);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .receipt-modal-backdrop.open {
+      display: flex;
+      animation: fadeFloatIn 0.25s ease both;
+    }
+
+    .grocery-receipt-paper {
+      width: 100%;
+      max-width: 340px;
+      background: #fffef9;
+      color: #1f1429;
+      font-family: var(--receipt-font);
+      padding: 26px 22px 28px 22px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      position: relative;
+      text-align: left;
+      border-top: 4px dashed #d6cde0;
+      border-bottom: 4px dashed #d6cde0;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .receipt-store-header {
+      text-align: center;
+      border-bottom: 1.5px dashed #4f435c;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+
+    .receipt-store-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin: 0 0 4px 0;
+    }
+
+    .receipt-store-sub {
+      font-size: 11px;
+      color: #5c506b;
+      margin: 0;
+    }
+
+    .receipt-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-size: 12.5px;
+      padding-bottom: 12px;
+      border-bottom: 1.5px dashed #4f435c;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .receipt-total-block {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 13px;
+    }
+
+    .receipt-grand-total {
+      font-size: 15.5px;
+      font-weight: 700;
+      border-top: 1px solid #1f1429;
+      padding-top: 6px;
+      margin-top: 4px;
+    }
+
+    .receipt-footer-note {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 11px;
+      color: #6a567d;
+    }
+
+    @keyframes fadeFloatIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    
+    .sky-hub-wrapper {
+      width: 100%;
+      max-width: 780px;
+      padding: 12px 20px 32px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .sky-route-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid var(--deep-purple);
+      border-radius: 999px;
+      padding: 6px 18px;
+      font-size: 11.5px;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--deep-purple);
+      box-shadow: 0 6px 18px rgba(61, 0, 102, 0.08);
+      flex-wrap: wrap;
+    }
+
+    .sky-route-pill {
+      background: rgba(81, 0, 135, 0.1);
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-style: normal;
+      font-size: 10.5px;
+      color: var(--mid-purple);
+    }
+
+    .sky-mode-selector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .sky-mode-btn {
+      padding: 8px 18px;
+      border-radius: 999px;
+      border: 1.5px solid var(--deep-purple);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--deep-purple);
+      font-family: var(--body-font);
+      font-size: 12px;
+      font-weight: 600;
+      font-style: italic;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(61, 0, 102, 0.07);
+    }
+
+    .sky-mode-btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--mid-purple);
+    }
+
+    .sky-mode-btn.active-sky-mode {
+      background: var(--mid-purple);
+      color: #ffffff;
+      border-color: var(--mid-purple);
+      box-shadow: 0 6px 16px rgba(81, 0, 135, 0.25);
+    }
+
+    .sky-canvas-card {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+      aspect-ratio: 16 / 9;
+      border-radius: 22px;
+      border: 2.5px solid var(--deep-purple);
+      overflow: hidden;
+      background: radial-gradient(circle at top, #510087 0%, #24003d 100%);
+      box-shadow: 0 16px 38px rgba(61, 0, 102, 0.18);
+      user-select: none;
+    }
+
+    #sky-game-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: pointer;
+    }
+
+    .sky-hud-bar {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .sky-hud-chip {
+      background: rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
+
+    .sky-overlay-screen {
+      position: absolute;
+      inset: 0;
+      background: rgba(31, 0, 54, 0.76);
+      backdrop-filter: blur(5px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      z-index: 6;
+      color: #ffffff;
+      gap: 10px;
+    }
+
+    .sky-overlay-screen.hidden {
+      display: none;
+    }
+
+    .sky-overlay-title {
+      font-family: var(--script-font);
+      font-size: clamp(32px, 4.5vw, 44px);
+      color: var(--gold);
+      margin: 0;
+      line-height: 1.05;
+    }
+
+    .sky-overlay-desc {
+      font-size: 13px;
+      max-width: 440px;
+      line-height: 1.5;
+      color: #f4ebff;
+      margin: 0;
+    }
+
+    .sky-win-reward {
+      background: rgba(253, 197, 0, 0.18);
+      border: 1.5px solid var(--gold);
+      border-radius: 14px;
+      padding: 10px 18px;
+      font-size: 13.5px;
+      font-weight: 600;
+      font-style: italic;
+      color: #fff6cc;
+      margin-top: 2px;
+    }
+
+    .sky-start-btn {
+      margin-top: 4px;
+      padding: 10px 26px;
+      border-radius: 999px;
+      border: none;
+      background: var(--gold);
+      color: var(--deep-purple);
+      font-family: var(--body-font);
+      font-size: 13px;
+      font-weight: 700;
+      font-style: italic;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(253, 197, 0, 0.35);
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+
+    .sky-start-btn:hover {
+      transform: translateY(-1px) scale(1.03);
+      background: #ffe066;
+    }
+
+    .sky-controls-hint {
+      font-size: 11.5px;
+      font-style: italic;
+      color: #6a567d;
+      margin: 0;
+    }
+
+    
+    .credits-wrapper {
+      width: 100%;
+      max-width: 660px;
+      padding: 16px 20px 38px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .credits-card {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--deep-purple);
+      border-radius: 26px;
+      padding: 32px 26px 30px 26px;
+      box-shadow: 0 16px 38px rgba(61, 0, 102, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+    }
+
+    .credits-script-title {
+      font-family: var(--script-font);
+      font-size: clamp(36px, 5vw, 48px);
+      color: var(--deep-purple);
+      line-height: 1;
+      margin: 0 0 2px 0;
+    }
+
+    .credits-quote-banner {
+      font-size: clamp(13px, 1.8vw, 15px);
+      font-weight: 600;
+      font-style: italic;
+      color: var(--mid-purple);
+      background: #faf6ff;
+      border: 1.5px solid rgba(81, 0, 135, 0.24);
+      border-radius: 16px;
+      padding: 12px 18px;
+      line-height: 1.5;
+      max-width: 520px;
+    }
+
+    .credits-lines-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 4px 0;
+    }
+
+    .credit-line-item {
+      font-size: clamp(14px, 2vw, 16.5px);
+      font-weight: 600;
+      font-style: italic;
+      color: var(--deep-purple);
+      letter-spacing: 0.3px;
+      padding: 5px 16px;
+      border-radius: 999px;
+      background: rgba(81, 0, 135, 0.05);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.45s ease, transform 0.45s ease, background 0.2s ease;
+    }
+
+    .credit-line-item.revealed-credit {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .credit-line-item:hover {
+      background: rgba(253, 197, 0, 0.22);
+    }
+
+    .credit-line-item.heart-highlight {
+      background: rgba(81, 0, 135, 0.09);
+      border: 1.5px solid var(--mid-purple);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .credits-assist-footer {
+      margin-top: 6px;
+      padding-top: 12px;
+      border-top: 1.5px dashed rgba(81, 0, 135, 0.25);
+      width: 100%;
+      font-size: 12px;
+      font-weight: 500;
+      font-style: italic;
+      color: #6a567d;
+    }
+
+    .notebook-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 15px;
+      background: var(--mid-purple);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blinkCursor 0.8s infinite;
+    }
+
+    @keyframes blinkCursor {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .page-card-stage {
+      width: 100%;
+      max-width: 640px;
+      padding: 20px;
+      text-align: left;
+    }
+
+    .minimal-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(81, 0, 135, 0.18);
+      border-radius: 18px;
+      padding: 30px 28px;
+      box-shadow: 0 14px 34px rgba(61, 0, 102, 0.08);
+    }
+
+    .card-heading {
+      margin: 0 0 20px 0;
+      font-size: 16px;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--deep-purple);
+      letter-spacing: 0.5px;
+    }
+
+    .placeholder-copy {
+      font-size: 13px;
+      color: #4f435c;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    @media (max-width: 920px) {
+      .dates-split-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .editorial-dates-left,
+      .notebook-right-column {
+        max-width: 580px;
+        position: static;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .top-pill-nav {
+        padding: 12px 10px 4px 10px;
+        justify-content: center;
+      }
+
+      .nav-pill-track {
+        gap: 1px;
+        padding: 3px;
+        max-width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .nav-pill-track::-webkit-scrollbar {
+        display: none;
+      }
+
+      .nav-tab-btn {
+        padding: 5px 8.5px;
+        font-size: 10.5px;
+        flex-shrink: 0;
+      }
+
+      .thread-scene {
+        aspect-ratio: 4 / 3;
+      }
+
+      .oval-frame {
+        width: 26%;
+      }
+
+      .oval-left {
+        left: 8%;
+        top: 26%;
+      }
+
+      .oval-right {
+        right: 8%;
+        top: 26%;
+      }
+
+      .stitched-bottom-label {
+        bottom: 9%;
+      }
+
+      .editorial-card {
+        flex-direction: column;
+        padding: 18px;
+        gap: 14px;
+      }
+
+      .editorial-card.card-reverse-mobile {
+        flex-direction: column-reverse;
+      }
+
+      .editorial-photo-box {
+        width: 100%;
+      }
+
+      .notebook-sheet {
+        padding: 20px 18px 24px 54px;
+      }
+
+      .cookie-stage.cracked #cookie1 {
+        transform: translateX(-135px) rotate(-14deg);
+      }
+
+      .cookie-stage.cracked #cookie2 {
+        transform: translateX(135px) rotate(14deg);
+      }
+
+      
+      .fridge-view-wrapper {
+        padding: 4px 10px 10px 10px;
+        gap: 6px;
+      }
+
+      .fridge-workspace {
+        position: relative;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .fridge-stage {
+        max-width: 265px;
+      }
+
+      .fridge-in-controls {
+        bottom: 8px;
+        gap: 4px;
+      }
+
+      .fridge-mini-btn {
+        padding: 4px 8px;
+        font-size: 8.5px;
+      }
+
+      
+      .grocery-cart-panel {
+        position: absolute;
+        bottom: 40px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        transform: none;
+        animation: none;
+        width: 248px;
+        max-width: 94%;
+        padding: 5px 7px 7px 7px;
+        border-radius: 14px;
+        gap: 3px;
+        z-index: 18;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 8px 20px rgba(31, 0, 54, 0.28);
+      }
+
+      .cart-header-title {
+        font-size: 19px;
+      }
+
+      .cart-sub-hint {
+        font-size: 8.5px;
+        margin: -2px 0 0 0;
+      }
+
+      .cart-items-grid {
+        grid-template-columns: repeat(8, 1fr);
+        gap: 3px;
+        padding: 5px;
+        min-height: auto;
+        border-radius: 10px;
+      }
+
+      .cart-emoji-item {
+        font-size: 13px;
+        border-radius: 5px;
+      }
+
+      
+      .jar-view-wrapper {
+        padding: 4px 10px 10px 10px;
+        gap: 6px;
+      }
+
+      .jar-title-script {
+        font-size: 28px;
+      }
+
+      .jar-workspace {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .jar-stage {
+        max-width: 148px;
+        flex-shrink: 0;
+      }
+
+      .jar-action-pill {
+        top: 4px;
+        right: 4px;
+        padding: 3px 8px;
+        font-size: 8px;
+      }
+
+      .jar-folded-slip {
+        width: 24px;
+        height: 24px;
+      }
+
+      .jar-right-column {
+        flex: 1;
+        min-width: 0;
+        gap: 8px;
+      }
+
+      .unfolded-note-stage {
+        min-height: 92px;
+        padding: 10px;
+        border-radius: 14px;
+      }
+
+      .unfolded-paper-card {
+        min-height: 70px;
+        padding: 10px 12px;
+      }
+
+      .unfolded-paper-text {
+        font-size: 11.5px;
+      }
+
+      .jar-add-goal-box {
+        padding: 8px 10px;
+        border-radius: 12px;
+        gap: 6px;
+      }
+
+      .jar-goal-input {
+        padding: 6px 8px;
+        font-size: 10.5px;
+      }
+
+      .jar-color-dot {
+        width: 13px;
+        height: 13px;
+      }
+
+      .jar-add-btn {
+        padding: 5px 10px;
+        font-size: 9.5px;
+      }
+
+      
+      .sky-hub-wrapper {
+        padding: 6px 12px 12px 12px;
+        gap: 8px;
+      }
+
+      .sky-canvas-card.mobile-portrait-sky {
+        max-width: 270px;
+        aspect-ratio: 9 / 16;
+      }
+  <!-- HEY WHY R U INSPECTING MY CODE -->
+
+      .sky-overlay-title {
+        font-size: 28px;
+      }
+
+      .sky-overlay-desc {
+        font-size: 11.5px;
+        line-height: 1.38;
+      }
+
+      .sky-win-reward {
+        font-size: 11.5px;
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="screen-loading" class="screen active">
+    <div class="heart-wrapper">
+      <svg width="170" height="160" viewBox="0 0 100 95">
+        <defs>
+          <clipPath id="heart-clip">
+            <path d="M50 88 C50 88 8 60 8 30 C8 16 19 6 32 6 C41 6 47 11 50 18 C53 11 59 6 68 6 C81 6 92 16 92 30 C92 60 50 88 50 88 Z" />
+          </clipPath>
+        </defs>
+        <path d="M50 88 C50 88 8 60 8 30 C8 16 19 6 32 6 C41 6 47 11 50 18 C53 11 59 6 68 6 C81 6 92 16 92 30 C92 60 50 88 50 88 Z" fill="#2b0947" />
+        <image href="images/chow.jpg" x="0" y="0" width="100" height="95" preserveAspectRatio="xMidYMid slice" clip-path="url(#heart-clip)"
+               style="filter: grayscale(100%) sepia(42%) hue-rotate(246deg) saturate(210%) contrast(1.06);" />
+        <path d="M50 88 C50 88 8 60 8 30 C8 16 19 6 32 6 C41 6 47 11 50 18 C53 11 59 6 68 6 C81 6 92 16 92 30 C92 60 50 88 50 88 Z"
+              fill="rgba(81, 0, 135, 0.24)" style="mix-blend-mode: screen; pointer-events: none;" />
+        <path d="M50 88 C50 88 8 60 8 30 C8 16 19 6 32 6 C41 6 47 11 50 18 C53 11 59 6 68 6 C81 6 92 16 92 30 C92 60 50 88 50 88 Z"
+              fill="none" stroke="#fdc500" stroke-width="3" stroke-linejoin="round" />
+      </svg>
+    </div>
+    <div class="loading-text">LOADING...</div>
+  </div>
+
+  <div id="screen-constellation" class="screen">
+    <canvas id="canvas" width="660" height="450"></canvas>
+  </div>
+
+  <div id="screen-login" class="screen">
+    <div class="login-box">
+      <h2>Who are you?</h2>
+      <input type="text" id="secret-input" placeholder="Type here..." autocomplete="off">
+      <button id="login-btn">Continue</button>
+      <div id="error-msg"></div>
+    </div>
+  </div>
+
+  <div id="screen-app" class="screen">
+    <div class="edge-bar"><div class="star-belt-track"><div class="star-belt-chunk"><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span></div><div class="star-belt-chunk"><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span></div></div></div>
+
+    <nav class="top-pill-nav">
+      <div id="nav-track" class="nav-pill-track">
+        <div id="nav-slider" class="nav-slider"></div>
+        <button class="nav-tab-btn active-tab" data-view="view-home">home</button>
+        <button class="nav-tab-btn" data-view="view-dates">dates</button>
+        <button class="nav-tab-btn" data-view="view-cookies">cookies</button>
+        <button class="nav-tab-btn" data-view="view-fridge">fridge</button>
+        <button class="nav-tab-btn" data-view="view-jar">jar</button>
+        <button class="nav-tab-btn" data-view="view-sky">sky</button>
+        <button class="nav-tab-btn" data-view="view-credits">credits</button>
+        <button class="nav-tab-btn" data-view="view-soon">soon</button>
+      </div>
+    </nav>
+
+    <section id="view-home" class="tab-view active-view">
+      <div class="thread-stage">
+        <div class="thread-scene">
+          <div class="oval-frame oval-left">
+            <img src="images/juno.jpg" alt="">
+          </div>
+
+          <div class="oval-frame oval-right">
+            <img src="images/juli.jpg" alt="">
+          </div>
+
+          <div class="stitched-bottom-label">stitched together</div>
+
+          <svg class="purple-thread-svg" viewBox="0 0 1000 562.5" preserveAspectRatio="none">
+            <path id="connecting-thread" class="thread-path" d="" />
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-dates" class="tab-view">
+      <div class="dates-split-wrapper">
+        <div class="editorial-dates-left">
+          <div class="dates-hero-header">
+            <svg class="filigree-svg" viewBox="0 0 90 26">
+              <path d="M88,13 C72,13 68,4 56,4 C45,4 44,21 33,21 C23,21 22,8 12,10 C5,11 2,16 6,19" />
+            </svg>
+            <h2 class="dates-script-title">to remember</h2>
+            <svg class="filigree-svg" viewBox="0 0 90 26">
+              <path d="M2,13 C18,13 22,4 34,4 C45,4 46,21 57,21 C67,21 68,8 78,10 C85,11 88,16 84,19" />
+            </svg>
+          </div>
+
+          <article class="editorial-card date-step revealed-date card-reverse-mobile" data-step="0" onclick="revealNextDate(0)">
+            <div class="editorial-copy">
+              <div class="editorial-days-big"><span id="days-itzy">0</span> DAYS</div>
+              <div class="editorial-sub-label">since itzy</div>
+              <div class="editorial-date-small">07/11/2026</div>
+              <div class="tap-next-hint">tap for next</div>
+            </div>
+            <div class="editorial-photo-box">
+              <img src="images/itzy.jpg" alt="">
+            </div>
+            <div class="right-heart-medallion">♥</div>
+          </article>
+
+          <article class="editorial-card date-step locked-date" data-step="1" onclick="revealNextDate(1)">
+            <div class="editorial-photo-box">
+              <img src="images/bingsu.jpg" alt="">
+            </div>
+            <div class="editorial-copy">
+              <div class="editorial-days-big"><span id="days-meet">0</span> DAYS</div>
+              <div class="editorial-sub-label">first meet</div>
+              <div class="editorial-date-small">08/15/2026</div>
+              <div class="tap-next-hint">tap for next</div>
+            </div>
+            <div class="right-heart-medallion">♥</div>
+          </article>
+
+          <article class="editorial-card date-step locked-date card-reverse-mobile" data-step="2" onclick="revealNextDate(2)">
+            <div class="editorial-copy">
+              <div class="together-highlight-box">
+                <div class="together-live-numbers">
+                  <span id="days-together">0</span> DAYS • <span id="hours-together">0</span> HRS • <span id="mins-together">0</span> MINS
+                </div>
+                <div class="editorial-sub-label">with you</div>
+                <div class="together-exact-stamp">09/04/2026 • 11:45 PM</div>
+              </div>
+              <div class="tap-next-hint">tap for next</div>
+            </div>
+            <div class="editorial-photo-box">
+              <img src="images/ramenagi.jpg" alt="">
+            </div>
+          </article>
+
+          <article class="editorial-card date-step locked-date" data-step="3" onclick="revealNextDate(3)">
+            <div class="editorial-photo-box">
+              <img src="images/cool.jpg" alt="">
+            </div>
+            <div class="editorial-copy">
+              <div class="editorial-days-big"><span id="days-oct5">0</span> DAYS</div>
+              <div class="editorial-sub-label">since</div>
+              <div class="editorial-date-small">10/05/2026</div>
+              <div class="tap-next-hint">tap for next</div>
+            </div>
+            <div class="right-heart-medallion">♥</div>
+          </article>
+
+          <article class="editorial-card date-step locked-date card-reverse-mobile" data-step="4" onclick="revealNextDate(4)">
+            <div class="editorial-copy">
+              <div class="editorial-days-big"><span id="days-oct21">0</span> DAYS</div>
+              <div class="editorial-sub-label">since</div>
+              <div class="editorial-date-small">10/21/2026</div>
+              <div class="tap-next-hint">tap for next</div>
+            </div>
+            <div class="editorial-photo-box">
+              <img src="images/defense.jpg" alt="">
+            </div>
+          </article>
+
+          <article class="editorial-card date-step locked-date" data-step="5" onclick="revealNextDate(5)">
+            <div class="editorial-photo-box">
+              <img src="images/clean.jpg" alt="">
+            </div>
+            <div class="editorial-copy">
+              <div class="editorial-days-big"><span id="days-nov5">0</span> DAYS</div>
+              <div class="editorial-sub-label">since</div>
+              <div class="editorial-date-small">11/05/2026</div>
+              <div class="tap-next-hint">tap for next</div>
+            </div>
+            <div class="right-heart-medallion">♥</div>
+          </article>
+
+          <div class="more-to-come-box locked-date" data-step="6">
+            <div class="more-to-come-script">and more to come!</div>
+          </div>
+        </div>
+
+        <aside class="notebook-right-column">
+          <div class="notebook-cover-board">
+            <div class="notebook-sheet">
+              <div class="notebook-holes-strip" id="notebook-holes"></div>
+              <p class="notebook-ruled-text" id="notebook-animated-text"></p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="view-cookies" class="tab-view">
+      <div class="cookie-view-wrapper">
+        <audio id="crack-audio" preload="auto">
+          <source src="crunch.mp3" type="audio/mpeg">
+          <source src="images/crunch.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="pop-audio" preload="auto">
+          <source src="pop.mp3" type="audio/mpeg">
+          <source src="images/pop.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="date-audio" preload="auto">
+          <source src="date.mp3" type="audio/mpeg">
+          <source src="images/date.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="chaching-audio" preload="auto">
+          <source src="chaching.mp3" type="audio/mpeg">
+          <source src="images/chaching.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="sfx-1" preload="auto">
+          <source src="1.wav" type="audio/wav">
+          <source src="images/1.wav" type="audio/wav">
+        </audio>
+        <audio id="sfx-2" preload="auto">
+          <source src="2.wav" type="audio/wav">
+          <source src="images/2.wav" type="audio/wav">
+        </audio>
+        <audio id="sfx-3" preload="auto">
+          <source src="3.wav" type="audio/wav">
+          <source src="images/3.wav" type="audio/wav">
+        </audio>
+        <audio id="sfx-4" preload="auto">
+          <source src="4.wav" type="audio/wav">
+          <source src="images/4.wav" type="audio/wav">
+        </audio>
+        <audio id="sfx-5" preload="auto">
+          <source src="5.wav" type="audio/wav">
+          <source src="images/5.wav" type="audio/wav">
+        </audio>
+        <audio id="sfx-6" preload="auto">
+          <source src="6.wav" type="audio/wav">
+          <source src="images/6.wav" type="audio/wav">
+        </audio>
+        <audio id="sfx-10" preload="auto">
+          <source src="10.mp3" type="audio/mpeg">
+          <source src="images/10.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="reflect-bgm" preload="auto" loop>
+          <source src="reflect.mp3" type="audio/mpeg">
+          <source src="images/reflect.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="app-bgm" preload="auto" loop>
+          <source src="bg.mp3" type="audio/mpeg">
+          <source src="images/bg.mp3" type="audio/mpeg">
+        </audio>
+        <div class="cookie-stage" id="stage" onclick="crackCookie()">
+          <img src="images/fortune.png" id="fortune" alt="Fortune Cookie">
+          <img src="images/cookie1.png" id="cookie1" class="cookie-half" alt="Left Cookie Half">
+          <div class="fortune-paper">
+            <span class="fortune-text" id="message">and even distant stars are never out of sight, you shine allll the way to bataan:)</span>
+          </div>
+          <img src="images/cookie2.png" id="cookie2" class="cookie-half" alt="Right Cookie Half">
+        </div>
+        <div class="cookie-hint-text">tap the cookie to crack it open</div>
+        <button class="new-cookie-btn" onclick="resetCookie()">New Cookie</button>
+      </div>
+    </section>
+
+    <section id="view-fridge" class="tab-view">
+      <div class="fridge-view-wrapper">
+        <div class="fridge-workspace">
+          <div class="fridge-stage">
+            <img id="fridge-main-img" src="images/shrimp.png" class="fridge-base-img" alt="">
+
+            
+            <button type="button" id="btn-toggle-fridge" class="fridge-handle-badge" onclick="toggleFridge()">OPEN FRIDGE</button>
+
+            
+            <div id="closed-fridge-layer">
+              <div class="fridge-door-trigger" onclick="setFridgeOpen(true)" title="Tap fridge to open"></div>
+
+              <div class="fridge-photo fp-1"><img src="images/1.jpg" alt=""></div>
+              <div class="fridge-photo fp-2"><img src="images/2.jpg" alt=""></div>
+              <div class="fridge-photo fp-3"><img src="images/3.jpg" alt=""></div>
+              <div class="fridge-photo fp-4"><img src="images/4.jpg" alt=""></div>
+              <div class="fridge-photo fp-5"><img src="images/5.jpg" alt=""></div>
+              <div class="fridge-photo fp-6"><img src="images/6.jpg" alt=""></div>
+              <div class="fridge-photo fp-7"><img src="images/7.jpg" alt=""></div>
+
+              <div class="fridge-magnet mag-cat-red">🐈‍⬛</div>
+              <div class="fridge-magnet mag-japan-flag"></div>
+              <div class="fridge-magnet mag-girls-sticker">Girls Will Be Girls</div>
+              <div class="fridge-magnet mag-chibi-pin">👦🏻</div>
+            </div>
+
+            
+            <div id="fridge-mini-toast" class="fridge-mini-toast"></div>
+            <div id="open-fridge-overlay" class="open-fridge-overlay" style="display: none;"></div>
+
+            
+            <div class="fridge-in-controls">
+              <button type="button" id="btn-set-aside-cart" class="fridge-mini-btn accent" onclick="setAsideCart()" style="display: none;">SET ASIDE CART</button>
+              <button type="button" id="btn-show-cart" class="fridge-mini-btn accent" onclick="showCartBack()" style="display: none;">SHOW CART</button>
+              <button type="button" id="btn-reopen-receipt" class="fridge-mini-btn" onclick="openReceiptModal()">VIEW RECEIPT</button>
+            </div>
+          </div>
+
+          
+          <div id="grocery-cart-panel" class="grocery-cart-panel" style="display: none;">
+            <h3 class="cart-header-title">cart</h3>
+            <p class="cart-sub-hint">Lagay mo mga want mo sa ref</p>
+            <div id="cart-items-grid" class="cart-items-grid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-jar" class="tab-view">
+      <div class="jar-view-wrapper">
+        <div class="dates-hero-header"><svg class="filigree-svg" viewBox="0 0 90 26"><path d="M88,13 C72,13 68,4 56,4 C45,4 44,21 33,21 C23,21 22,8 12,10 C5,11 2,16 6,19" /></svg><h2 class="jar-title-script">bucket list in a jar</h2><svg class="filigree-svg" viewBox="0 0 90 26"><path d="M2,13 C18,13 22,4 34,4 C45,4 46,21 57,21 C67,21 68,8 78,10 C85,11 88,16 84,19" /></svg></div>
+
+        <div class="jar-workspace">
+          <div class="jar-stage" id="jar-stage" onclick="handleJarStageClick(event)">
+            <button type="button" id="btn-toggle-jar" class="jar-action-pill" onclick="toggleJar(event)">OPEN JAR</button>
+            <img id="jar-main-img" src="images/cjar.png" class="jar-base-img" alt="Bucket List Jar">
+            <div id="jar-slips-container" class="jar-slips-container"></div>
+            <img id="jar-overlay-img" src="images/cjar.png" class="jar-overlay-img" alt="">
+          </div>
+
+          <div class="jar-right-column">
+            <div id="unfolded-note-stage" class="unfolded-note-stage">
+              <p class="jar-empty-drop-hint" id="jar-drop-hint">open the jar &amp; drag or tap a paper out</p>
+            </div>
+
+            <div class="jar-add-goal-box">
+              <input type="text" id="jar-goal-input" class="jar-goal-input" placeholder="put something you want to do with me someday" maxlength="140">
+              <div class="jar-goal-bottom-row">
+                <div class="jar-palette-dots" id="jar-palette-dots"></div>
+                <button type="button" class="jar-add-btn" onclick="addNewJarGoal()">fold into jar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-sky" class="tab-view">
+      <div class="sky-hub-wrapper">
+        <div class="sky-route-banner">
+          <span>Mariveles, Bataan</span>
+          <span class="sky-route-pill">✦ ~60 km apart ✦</span>
+          <span>Sumilang, Pasig</span>
+        </div>
+
+        
+        <div id="sky-picker-grid" style="display: flex; align-items: stretch; justify-content: center; gap: 24px; flex-wrap: wrap; margin-top: 6px;">
+          <div onclick="chooseSkySquare('stars')" style="width: 195px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <div style="width: 185px; height: 185px; border-radius: 22px; border: 2.5px solid var(--deep-purple); background: radial-gradient(circle at top, #510087 0%, #24003d 100%); box-shadow: 0 12px 26px rgba(61, 0, 102, 0.16); display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease;" onmouseover="this.style.transform='translateY(-4px) scale(1.03)'" onmouseout="this.style.transform='none'">
+              <svg width="86" height="86" viewBox="0 0 100 100">
+                <polygon points="50,6 63,36 95,39 71,60 78,92 50,75 22,92 29,60 5,39 37,36" fill="#fdc500" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span style="font-size: 13px; font-weight: 600; font-style: italic; color: var(--deep-purple); text-align: center;">catch the stars</span>
+          </div>
+
+          <div onclick="chooseSkySquare('runner')" style="width: 195px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <div style="width: 185px; height: 185px; border-radius: 22px; border: 2.5px solid var(--deep-purple); background: radial-gradient(circle at top, #510087 0%, #24003d 100%); box-shadow: 0 12px 26px rgba(61, 0, 102, 0.16); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; transition: transform 0.2s ease;" onmouseover="this.style.transform='translateY(-4px) scale(1.03)'" onmouseout="this.style.transform='none'">
+              <img src="images/yeji.png" alt="Yeji" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            <span style="font-size: 13px; font-weight: 600; font-style: italic; color: var(--deep-purple); text-align: center;">yeji run away</span>
+          </div>
+        </div>
+
+        
+        <div id="sky-arena-wrap" style="display: none; width: 100%; flex-direction: column; align-items: center; gap: 10px;">
+          <div style="width: 100%; max-width: 720px; display: flex; justify-content: flex-start;">
+            <button type="button" class="sky-mode-btn" onclick="backToSkySquares()">← back to games</button>
+          </div>
+
+          <div class="sky-canvas-card">
+            <div class="sky-hud-bar">
+              <div class="sky-hud-chip" id="sky-hud-left">Stars: 0 / 15</div>
+              <div class="sky-hud-chip" id="sky-hud-right">Mariveles → Pasig</div>
+            </div>
+
+            <canvas id="sky-game-canvas" width="720" height="405"></canvas>
+
+            <div id="sky-overlay" class="sky-overlay-screen">
+              <h3 class="sky-overlay-title" id="sky-overlay-title">catch the stars</h3>
+              <p class="sky-overlay-desc" id="sky-overlay-desc">Move left &amp; right across the night sky to catch 15 glowing stars bridging Mariveles and Pasig.</p>
+              <div id="sky-win-reward" class="sky-win-reward" style="display: none;">you are now a minute closer to our next hangout</div>
+              <button type="button" class="sky-start-btn" id="sky-start-btn" onclick="startSkyGame()">start game</button>
+            </div>
+          </div>
+
+          <p class="sky-controls-hint" id="sky-controls-hint">drag, tap, or use ← → arrow keys to move the basket</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-credits" class="tab-view">
+      <div class="credits-wrapper">
+        <div class="credits-card">
+          <div class="dates-hero-header"><svg class="filigree-svg" viewBox="0 0 90 26"><path d="M88,13 C72,13 68,4 56,4 C45,4 44,21 33,21 C23,21 22,8 12,10 C5,11 2,16 6,19" /></svg><h2 class="credits-script-title">credits</h2><svg class="filigree-svg" viewBox="0 0 90 26"><path d="M2,13 C18,13 22,4 34,4 C45,4 46,21 57,21 C67,21 68,8 78,10 C85,11 88,16 84,19" /></svg></div>
+          <div class="credits-quote-banner">
+            I've learned about love more by loving u than from the dictionaries
+          </div>
+          <div class="credits-lines-list" id="credits-lines-list">
+            <div class="credit-line-item">my eyes</div>
+            <div class="credit-line-item">my ears</div>
+            <div class="credit-line-item">my mouth and nose</div>
+            <div class="credit-line-item">my head</div>
+            <div class="credit-line-item">my shoulders</div>
+            <div class="credit-line-item">my knees and toes</div>
+            <div class="credit-line-item heart-highlight">my heart, my soul, my love</div>
+          </div>
+          <div class="credits-assist-footer">thx gemini for the assist</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-soon" class="tab-view">
+      <div class="credits-wrapper">
+        <div class="credits-card" style="max-width: 480px;">
+          <div class="dates-hero-header"><svg class="filigree-svg" viewBox="0 0 90 26"><path d="M88,13 C72,13 68,4 56,4 C45,4 44,21 33,21 C23,21 22,8 12,10 C5,11 2,16 6,19" /></svg><h2 class="credits-script-title">under construction</h2><svg class="filigree-svg" viewBox="0 0 90 26"><path d="M2,13 C18,13 22,4 34,4 C45,4 46,21 57,21 C67,21 68,8 78,10 C85,11 88,16 84,19" /></svg></div>
+          <p class="placeholder-copy" style="font-style: italic; font-weight: 600; color: var(--mid-purple);">it's under construction :)</p>
+          <p class="placeholder-copy" style="font-weight: 700; font-size: 12.5px; color: var(--deep-purple); letter-spacing: 0.4px;">THERE IS NO EXIT OR LOGOUT BUTTON CAUSE THAT IS NOT AN OPTION</p>
+          <div style="width: 100%; max-width: 300px; border-radius: 18px; overflow: hidden; border: 2px solid var(--deep-purple); background: #faf6ff; box-shadow: 0 10px 24px rgba(61,0,102,0.12);">
+            <img src="images/ryujin.jpg" alt="Ryujin" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="edge-bar bottom"><div class="star-belt-track"><div class="star-belt-chunk"><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span></div><div class="star-belt-chunk"><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span><span class="belt-star">✦</span><span class="belt-star tiny">★</span><span class="belt-star">✧</span></div></div></div>
+  </div>
+
+  
+  <div id="receipt-modal-backdrop" class="receipt-modal-backdrop" onclick="handleReceiptBackdropClick(event)">
+    <div class="grocery-receipt-paper" onclick="event.stopPropagation()">
+      <div class="receipt-store-header">
+        <div class="receipt-store-title">KONBENI</div>
+        <p class="receipt-store-sub">FRIDGE RESTOCK RECEIPT</p>
+        <p class="receipt-store-sub" id="receipt-timestamp"></p>
+      </div>
+      <div id="receipt-lines" class="receipt-lines"></div>
+      <div id="receipt-total-block" class="receipt-total-block"></div>
+      <div class="receipt-footer-note">tap outside this receipt to close</div>
+    </div>
+  </div>
+
+<script>
+
+  const holesContainer = document.getElementById("notebook-holes");
+  if (holesContainer) {
+    for (let i = 0; i < 16; i++) {
+      const hole = document.createElement("div");
+      hole.className = "notebook-hole";
+      holesContainer.appendChild(hole);
+    }
+  }
+
+  function moveNavPill(activeBtn) {
+    const slider = document.getElementById("nav-slider");
+    if (!slider || !activeBtn) return;
+    slider.style.width = activeBtn.offsetWidth + "px";
+    slider.style.transform = `translateX(${activeBtn.offsetLeft - 4}px)`;
+  }
+
+  function updateLoveCounters() {
+    const now = new Date();
+    const itzyDate = new Date(2026, 6, 11, 0, 0, 0);
+    const meetDate = new Date(2026, 7, 15, 0, 0, 0);
+    const togetherDate = new Date(2026, 8, 4, 23, 45, 0);
+    const oct5Date = new Date(2026, 9, 5, 0, 0, 0);
+    const oct21Date = new Date(2026, 9, 21, 0, 0, 0);
+    const nov5Date = new Date(2026, 10, 5, 0, 0, 0);
+
+    const dayMs = 1000 * 60 * 60 * 24;
+    const calcDays = (d) => Math.max(0, Math.floor((now - d) / dayMs));
+
+    const itzyEl = document.getElementById("days-itzy");
+    const meetEl = document.getElementById("days-meet");
+    const oct5El = document.getElementById("days-oct5");
+    const oct21El = document.getElementById("days-oct21");
+    const nov5El = document.getElementById("days-nov5");
+
+    if (itzyEl) itzyEl.textContent = calcDays(itzyDate);
+    if (meetEl) meetEl.textContent = calcDays(meetDate);
+    if (oct5El) oct5El.textContent = calcDays(oct5Date);
+    if (oct21El) oct21El.textContent = calcDays(oct21Date);
+    if (nov5El) nov5El.textContent = calcDays(nov5Date);
+
+    const diffMs = Math.max(0, now - togetherDate);
+    const totalDays = Math.floor(diffMs / dayMs);
+    const remHours = Math.floor((diffMs % dayMs) / (1000 * 60 * 60));
+    const remMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    const togetherDaysEl = document.getElementById("days-together");
+    const togetherHoursEl = document.getElementById("hours-together");
+    const togetherMinsEl = document.getElementById("mins-together");
+
+    if (togetherDaysEl) togetherDaysEl.textContent = totalDays;
+    if (togetherHoursEl) togetherHoursEl.textContent = remHours;
+    if (togetherMinsEl) togetherMinsEl.textContent = remMins;
+  }
+
+  const CART_GROCERIES = [
+    { id: "g1", emoji: "🍨", name: "Ice Cream", price: 145 },
+    { id: "g2", emoji: "🍙", name: "Onigiri", price: 65 },
+    { id: "g3", emoji: "🍚", name: "Steamed Rice", price: 45 },
+    { id: "g4", emoji: "🍘", name: "Rice Cracker", price: 55 },
+    { id: "g5", emoji: "🥭", name: "Sweet Mango", price: 85 },
+    { id: "g6", emoji: "🥦", name: "Fresh Broccoli", price: 95 },
+    { id: "g7", emoji: "🥚", name: "Farm Eggs", price: 110 },
+    { id: "g8", emoji: "🍰", name: "Strawberry Cake", price: 185 },
+    { id: "g9", emoji: "🥩", name: "Wagyu Steak", price: 480 },
+    { id: "g10", emoji: "🥓", name: "Crispy Bacon", price: 210 },
+    { id: "g11", emoji: "🥛", name: "Fresh Milk", price: 95 },
+    { id: "g12", emoji: "🍓", name: "Strawberries", price: 165 },
+    { id: "g13", emoji: "🧀", name: "Cheddar Cheese", price: 135 },
+    { id: "g14", emoji: "🥟", name: "Gyoza Dumplings", price: 160 },
+    { id: "g15", emoji: "🧋", name: "Brown Sugar Boba", price: 130 },
+    { id: "g16", emoji: "🍤", name: "Tempura Shrimp", price: 240 }
+  ];
+
+  const FRIDGE_SLOTS = [
+    { id: "s0", top: 26.5, left: 22.5 },
+    { id: "s1", top: 26.5, left: 34.5 },
+    { id: "s2", top: 26.5, left: 47.0 },
+    { id: "s3", top: 26.5, left: 60.5 },
+    { id: "s4", top: 26.5, left: 73.5 },
+    { id: "s5", top: 40.5, left: 17.5 },
+    { id: "s6", top: 40.5, left: 28.0 },
+    { id: "s7", top: 40.5, left: 38.8 },
+    { id: "s8", top: 40.5, left: 49.8 },
+    { id: "s9", top: 40.5, left: 60.8 },
+    { id: "s10", top: 40.5, left: 72.0 },
+    { id: "s11", top: 55.5, left: 16.0 },
+    { id: "s12", top: 55.5, left: 27.5 },
+    { id: "s13", top: 55.5, left: 41.5 },
+    { id: "s14", top: 55.5, left: 54.5 },
+    { id: "s15", top: 55.5, left: 70.0 },
+    { id: "s16", top: 55.5, left: 83.5 },
+    { id: "s17", top: 71.5, left: 14.5 },
+    { id: "s18", top: 71.5, left: 26.0 },
+    { id: "s19", top: 71.5, left: 39.5 },
+    { id: "s20", top: 71.5, left: 53.0 },
+    { id: "s21", top: 71.5, left: 69.5 },
+    { id: "s22", top: 71.5, left: 78.5 },
+    { id: "s23", top: 88.0, left: 11.0 },
+    { id: "s24", top: 88.0, left: 26.0 },
+    { id: "s25", top: 88.0, left: 62.5 },
+    { id: "s26", top: 88.0, left: 76.5 }
+  ];
+
+  let isFridgeOpen = false;
+  let isCartSetAside = false;
+  let draggedGroceryId = null;
+  let selectedTouchGroceryId = null;
+  const placedSlots = {};
+  const billedFridgeItems = [];
+
+  function initFridgeUI() {
+    const overlay = document.getElementById("open-fridge-overlay");
+    const cartGrid = document.getElementById("cart-items-grid");
+    if (!overlay || !cartGrid) return;
+
+    overlay.innerHTML = "";
+    FRIDGE_SLOTS.forEach(slot => {
+      const slotEl = document.createElement("div");
+      slotEl.className = "shelf-slot";
+      slotEl.dataset.slotId = slot.id;
+      slotEl.style.top = slot.top + "%";
+      slotEl.style.left = slot.left + "%";
+
+      slotEl.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        slotEl.classList.add("drag-over");
+      });
+
+      slotEl.addEventListener("dragleave", () => {
+        slotEl.classList.remove("drag-over");
+      });
+
+      slotEl.addEventListener("drop", (e) => {
+        e.preventDefault();
+        slotEl.classList.remove("drag-over");
+        const gId = e.dataTransfer.getData("text/plain") || draggedGroceryId;
+        if (gId) {
+          placeGroceryInSlot(slot.id, gId);
+        }
+      });
+
+      slotEl.addEventListener("click", () => {
+        if (selectedTouchGroceryId) {
+          placeGroceryInSlot(slot.id, selectedTouchGroceryId);
+          selectedTouchGroceryId = null;
+          renderCartItems();
+        } else if (placedSlots[slot.id]) {
+          selectedShelfSlotId = (selectedShelfSlotId === slot.id) ? null : slot.id;
+          renderShelfSlots();
+        }
+      });
+
+      overlay.appendChild(slotEl);
+    });
+
+    renderCartItems();
+    renderShelfSlots();
+  }
+
+  function renderCartItems() {
+    const cartGrid = document.getElementById("cart-items-grid");
+    if (!cartGrid) return;
+
+    const placedIds = new Set(Object.values(placedSlots).map(item => item.id));
+    cartGrid.innerHTML = "";
+
+    CART_GROCERIES.forEach(item => {
+      const el = document.createElement("div");
+      el.className = "cart-emoji-item";
+      if (placedIds.has(item.id)) {
+        el.classList.add("placed-in-fridge");
+      }
+      if (selectedTouchGroceryId === item.id) {
+        el.classList.add("selected-touch");
+      }
+      el.textContent = item.emoji;
+      el.title = `${item.name} (₱${item.price})`;
+      el.draggable = !placedIds.has(item.id);
+
+      el.addEventListener("dragstart", (e) => {
+        draggedGroceryId = item.id;
+        e.dataTransfer.setData("text/plain", item.id);
+      });
+
+      el.addEventListener("dragend", () => {
+        draggedGroceryId = null;
+      });
+
+      el.addEventListener("click", () => {
+        if (placedIds.has(item.id)) return;
+        selectedTouchGroceryId = (selectedTouchGroceryId === item.id) ? null : item.id;
+        renderCartItems();
+      });
+
+      cartGrid.appendChild(el);
+    });
+  }
+
+  let selectedShelfSlotId = null;
+  let fridgeToastTimer = null;
+
+  function showFridgeMiniToast(msg) {
+    const toast = document.getElementById("fridge-mini-toast");
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add("show-toast");
+    if (fridgeToastTimer) clearTimeout(fridgeToastTimer);
+    fridgeToastTimer = setTimeout(() => {
+      toast.classList.remove("show-toast");
+    }, 2200);
+  }
+
+  let veggiePopupTimer = null;
+
+  function triggerVeggieCelebration() {
+    const popup = document.getElementById("veggie-celebration-popup");
+    if (!popup) return;
+    popup.classList.remove("active-veggie");
+    void popup.offsetWidth;
+    popup.classList.add("active-veggie");
+    if (veggiePopupTimer) clearTimeout(veggiePopupTimer);
+    veggiePopupTimer = setTimeout(() => {
+      popup.classList.remove("active-veggie");
+    }, 2600);
+  }
+
+  function removeFridgeSlotItem(slotId, actionType) {
+    const item = placedSlots[slotId];
+    if (!item) return;
+    delete placedSlots[slotId];
+    if (selectedShelfSlotId === slotId) selectedShelfSlotId = null;
+
+    const billedIdx = billedFridgeItems.findIndex(b => b.id === item.id && b.status === "stocked");
+
+    if (actionType === "eat") {
+      if (billedIdx !== -1) billedFridgeItems[billedIdx].status = "eaten";
+      playSfx("crack-audio");
+      showFridgeMiniToast("yay r u full!");
+      if (item.id === "g6") {
+        triggerVeggieCelebration();
+      }
+    } else if (actionType === "throw") {
+      if (billedIdx !== -1) billedFridgeItems[billedIdx].status = "thrown";
+      playSfx("sfx-4");
+      showFridgeMiniToast("sayang!");
+    } else {
+      if (billedIdx !== -1) billedFridgeItems.splice(billedIdx, 1);
+      playSfx("sfx-2");
+    }
+
+    renderShelfSlots();
+    renderCartItems();
+  }
+
+  function renderShelfSlots() {
+    const overlay = document.getElementById("open-fridge-overlay");
+    if (!overlay) return;
+
+    overlay.querySelectorAll(".shelf-slot").forEach(slotEl => {
+      const slotId = slotEl.dataset.slotId;
+      const item = placedSlots[slotId];
+      slotEl.innerHTML = "";
+
+      if (item) {
+        slotEl.style.zIndex = (selectedShelfSlotId === slotId) ? "35" : "6";
+        const emojiSpan = document.createElement("span");
+        emojiSpan.textContent = item.emoji;
+        slotEl.appendChild(emojiSpan);
+
+        const xBtn = document.createElement("button");
+        xBtn.type = "button";
+        xBtn.className = "slot-remove-x";
+        xBtn.textContent = "×";
+        xBtn.title = "Remove";
+        xBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          removeFridgeSlotItem(slotId, "remove");
+        });
+        slotEl.appendChild(xBtn);
+
+        if (selectedShelfSlotId === slotId) {
+          const bar = document.createElement("div");
+          bar.className = "slot-action-bar";
+
+          const eatBtn = document.createElement("button");
+          eatBtn.type = "button";
+          eatBtn.className = "slot-act-btn eat-btn";
+          eatBtn.textContent = "eat";
+          eatBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            removeFridgeSlotItem(slotId, "eat");
+          });
+
+          const throwBtn = document.createElement("button");
+          throwBtn.type = "button";
+          throwBtn.className = "slot-act-btn throw-btn";
+          throwBtn.textContent = "throw";
+          throwBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            removeFridgeSlotItem(slotId, "throw");
+          });
+
+          bar.appendChild(eatBtn);
+          bar.appendChild(throwBtn);
+          slotEl.appendChild(bar);
+        }
+
+        slotEl.classList.add("has-item");
+        slotEl.title = `${item.name} (tap for eat / throw)`;
+      } else {
+        slotEl.style.zIndex = "5";
+        slotEl.classList.remove("has-item");
+        slotEl.title = "";
+      }
+
+      if (isCartSetAside && !item) {
+        slotEl.style.visibility = "hidden";
+      } else {
+        slotEl.style.visibility = "visible";
+      }
+    });
+  }
+
+  function placeGroceryInSlot(slotId, groceryId) {
+    const grocery = CART_GROCERIES.find(g => g.id === groceryId);
+    if (!grocery) return;
+
+    let alreadyInFridge = false;
+    for (const key of Object.keys(placedSlots)) {
+      if (placedSlots[key].id === groceryId) {
+        delete placedSlots[key];
+        alreadyInFridge = true;
+      }
+    }
+
+    placedSlots[slotId] = grocery;
+    if (!alreadyInFridge) {
+      billedFridgeItems.push({ ...grocery, status: "stocked" });
+    }
+    playSfx("sfx-2");
+    renderShelfSlots();
+    renderCartItems();
+  }
+
+  function toggleFridge() {
+    setFridgeOpen(!isFridgeOpen);
+  }
+
+  function setFridgeOpen(open) {
+    const wasOpen = isFridgeOpen;
+    isFridgeOpen = open;
+    const mainImg = document.getElementById("fridge-main-img");
+    const closedLayer = document.getElementById("closed-fridge-layer");
+    const openOverlay = document.getElementById("open-fridge-overlay");
+    const cartPanel = document.getElementById("grocery-cart-panel");
+    const btnToggle = document.getElementById("btn-toggle-fridge");
+    const btnSetAside = document.getElementById("btn-set-aside-cart");
+
+    if (wasOpen !== open) {
+      playSfx("pop-audio");
+    }
+
+    if (open) {
+      mainImg.src = "images/open-fridge.jpg";
+      closedLayer.style.display = "none";
+      openOverlay.style.display = "block";
+      cartPanel.style.display = isCartSetAside ? "none" : "flex";
+      if (btnToggle) btnToggle.textContent = "CLOSE FRIDGE";
+      if (btnSetAside) btnSetAside.style.display = isCartSetAside ? "none" : "inline-block";
+      const btnShowCart = document.getElementById("btn-show-cart");
+      if (btnShowCart) btnShowCart.style.display = isCartSetAside ? "inline-block" : "none";
+      renderShelfSlots();
+    } else {
+      mainImg.src = "images/shrimp.png";
+      closedLayer.style.display = "block";
+      openOverlay.style.display = "none";
+      cartPanel.style.display = "none";
+      if (btnToggle) btnToggle.textContent = "OPEN FRIDGE";
+      if (btnSetAside) btnSetAside.style.display = "none";
+      const btnShowCart = document.getElementById("btn-show-cart");
+      if (btnShowCart) btnShowCart.style.display = "none";
+
+      if (wasOpen && !isCartSetAside && billedFridgeItems.length > 0) {
+        openReceiptModal();
+      }
+    }
+  }
+
+  function showCartBack() {
+    isCartSetAside = false;
+    const cartPanel = document.getElementById("grocery-cart-panel");
+    const btnSetAside = document.getElementById("btn-set-aside-cart");
+    const btnShowCart = document.getElementById("btn-show-cart");
+    if (cartPanel && isFridgeOpen) cartPanel.style.display = "flex";
+    if (btnSetAside && isFridgeOpen) btnSetAside.style.display = "inline-block";
+    if (btnShowCart) btnShowCart.style.display = "none";
+    renderShelfSlots();
+  }
+
+  function setAsideCart() {
+    isCartSetAside = true;
+    selectedTouchGroceryId = null;
+
+    const cartPanel = document.getElementById("grocery-cart-panel");
+    const btnSetAside = document.getElementById("btn-set-aside-cart");
+
+    if (cartPanel) cartPanel.style.display = "none";
+    if (btnSetAside) btnSetAside.style.display = "none";
+    const btnShowCart = document.getElementById("btn-show-cart");
+    if (btnShowCart) btnShowCart.style.display = "inline-block";
+
+    renderShelfSlots();
+    openReceiptModal();
+  }
+
+  function openReceiptModal() {
+    const backdrop = document.getElementById("receipt-modal-backdrop");
+    const linesEl = document.getElementById("receipt-lines");
+    const totalEl = document.getElementById("receipt-total-block");
+    const timeEl = document.getElementById("receipt-timestamp");
+    if (!backdrop || !linesEl || !totalEl) return;
+
+    const now = new Date();
+    timeEl.textContent = now.toLocaleDateString() + " • " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const items = billedFridgeItems;
+    linesEl.innerHTML = "";
+
+    if (items.length === 0) {
+      linesEl.innerHTML = `<div class="receipt-row"><span>(No groceries stocked in fridge)</span><span>₱0.00</span></div>`;
+      totalEl.innerHTML = `
+        <div class="receipt-row receipt-grand-total"><span>ESTIMATED TOTAL</span><span>₱0.00</span></div>
+      `;
+    } else {
+      let subtotal = 0;
+      items.forEach(item => {
+        subtotal += item.price;
+        const tag = item.status === "eaten" ? " (eaten)" : (item.status === "thrown" ? " (thrown)" : "");
+        const row = document.createElement("div");
+        row.className = "receipt-row";
+        row.innerHTML = `<span>${item.emoji} ${item.name}${tag}</span><span>₱${item.price.toFixed(2)}</span>`;
+        linesEl.appendChild(row);
+      });
+
+      const loveDiscount = subtotal;
+      totalEl.innerHTML = `
+        <div class="receipt-row"><span>ITEMS BILLED</span><span>${items.length}</span></div>
+        <div class="receipt-row"><span>ESTIMATED SUBTOTAL</span><span>₱${subtotal.toFixed(2)}</span></div>
+        <div class="receipt-row"><span>JULI TREAT (-100%)</span><span>-₱${loveDiscount.toFixed(2)}</span></div>
+        <div class="receipt-row receipt-grand-total"><span>TOTAL DUE</span><span>₱0.00</span></div>
+      `;
+    }
+
+    backdrop.classList.add("open");
+    playSfx("chaching-audio");
+  }
+
+  function handleReceiptBackdropClick(e) {
+    if (e.target.id === "receipt-modal-backdrop") {
+      document.getElementById("receipt-modal-backdrop").classList.remove("open");
+    }
+  }
+
+  const fortunes = [
+    "and even distant stars are never out of sight, you shine allll the way to bataan:)",
+    "you are loved in ways words have yet to discover hehe",
+    "somewhere ahead, everything will make a little more sense, it's ok baby",
+    "please take a bath.",
+    "i hope u feel love the way u show love to the people around u",
+    "time will tell",
+    "Take a rest baby, antok ba ikaw?",
+    "i love you",
+    "i love you",
+    "i miss you",
+    "you are pcgp always",
+    "pls take a shower",
+    "pa-kiss po",
+    "pa-kiss po",
+    "pa-kiss po"
+  ];
+
+  function playSfx(audioId, customVol = 0.5) {
+    const el = document.getElementById(audioId);
+    if (!el) return;
+    el.muted = false;
+    el.volume = customVol;
+    el.currentTime = 0;
+    el.play().catch((err) => {
+      console.warn("Audio blocked or missing:", audioId, err);
+    });
+  }
+
+  function revealNextDate(stepIndex) {
+    const currentCard = document.querySelector(`.editorial-card.date-step[data-step="${stepIndex}"]`);
+    if (currentCard) {
+      const hint = currentCard.querySelector(".tap-next-hint");
+      if (hint) hint.style.display = "none";
+    }
+    const nextItem = document.querySelector(`[data-step="${stepIndex + 1}"]`);
+    if (nextItem && nextItem.classList.contains("locked-date")) {
+      playSfx("date-audio");
+      nextItem.classList.remove("locked-date");
+      nextItem.classList.add("revealed-date");
+      setTimeout(() => {
+        nextItem.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 80);
+    }
+  }
+
+  let isCracked = false;
+
+  function crackCookie() {
+    if (isCracked) return;
+    isCracked = true;
+
+    const crackSound = document.getElementById("crack-audio");
+    if (crackSound) {
+      crackSound.muted = false;
+      crackSound.volume = 0.5;
+      crackSound.currentTime = 0;
+      crackSound.play().catch((err) => {
+        console.warn("Cookie crack sound blocked or missing:", err);
+      });
+    }
+
+    const stage = document.getElementById('stage');
+    const uncracked = document.getElementById('fortune');
+    const messageEl = document.getElementById('message');
+
+    messageEl.textContent = fortunes[Math.floor(Math.random() * fortunes.length)];
+
+    uncracked.classList.add('shaking');
+
+    setTimeout(() => {
+      uncracked.classList.remove('shaking');
+      stage.classList.add('cracked');
+    }, 400);
+  }
+
+  function resetCookie() {
+    isCracked = false;
+    document.getElementById('stage').classList.remove('cracked');
+  }
+
+  function buildOrganicThreadPath() {
+    const jitter = (n) => (Math.random() - 0.5) * n;
+    const pts = [
+      [348, 330],
+      [356 + jitter(4), 354 + jitter(4)],
+      [368 + jitter(5), 378 + jitter(5)],
+      [354 + jitter(5), 392 + jitter(4)],
+      [344 + jitter(4), 378 + jitter(4)],
+      [362 + jitter(5), 368 + jitter(4)],
+      [386 + jitter(5), 390 + jitter(5)],
+      [412 + jitter(5), 394 + jitter(4)],
+      [436 + jitter(4), 380 + jitter(4)],
+      [462 + jitter(4), 358 + jitter(4)],
+      [486 + jitter(3), 334 + jitter(3)],
+      [501 + jitter(2), 322 + jitter(2)],
+      [489 + jitter(3), 308 + jitter(3)],
+      [475 + jitter(3), 301 + jitter(3)],
+      [463 + jitter(3), 309 + jitter(3)],
+      [461 + jitter(3), 325 + jitter(3)],
+      [473 + jitter(3), 343 + jitter(3)],
+      [498 + jitter(2), 370 + jitter(3)],
+      [524 + jitter(3), 340 + jitter(3)],
+      [537 + jitter(3), 322 + jitter(3)],
+      [533 + jitter(3), 305 + jitter(3)],
+      [519 + jitter(3), 300 + jitter(3)],
+      [506 + jitter(3), 309 + jitter(3)],
+      [501 + jitter(2), 322 + jitter(2)],
+      [518 + jitter(4), 338 + jitter(4)],
+      [544 + jitter(4), 364 + jitter(4)],
+      [572 + jitter(5), 388 + jitter(5)],
+      [598 + jitter(5), 392 + jitter(4)],
+      [622 + jitter(5), 378 + jitter(5)],
+      [636 + jitter(4), 391 + jitter(4)],
+      [626 + jitter(4), 402 + jitter(4)],
+      [615 + jitter(4), 387 + jitter(4)],
+      [634 + jitter(4), 362 + jitter(4)],
+      [646 + jitter(3), 344 + jitter(3)],
+      [652, 330]
+    ];
+
+    let d = `M ${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const xc = (pts[i][0] + pts[i + 1][0]) / 2;
+      const yc = (pts[i][1] + pts[i + 1][1]) / 2;
+      d += ` Q ${pts[i][0].toFixed(1)},${pts[i][1].toFixed(1)} ${xc.toFixed(1)},${yc.toFixed(1)}`;
+    }
+    const last = pts[pts.length - 1];
+    d += ` T ${last[0].toFixed(1)},${last[1].toFixed(1)}`;
+    return d;
+  }
+
+  function startThreadAnimation() {
+    const thread = document.getElementById("connecting-thread");
+    if (!thread) return;
+    thread.setAttribute("d", buildOrganicThreadPath());
+    const totalLength = thread.getTotalLength();
+    thread.style.transition = "none";
+    thread.style.strokeDasharray = totalLength;
+    thread.style.strokeDashoffset = totalLength;
+    thread.getBoundingClientRect();
+    thread.style.transition = "stroke-dashoffset 4s cubic-bezier(0.32, 0.04, 0.62, 0.96)";
+    thread.style.strokeDashoffset = "0";
+  }
+
+  function juno(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+    if (screenId === "screen-login") {
+      fadeOutReflectMusic();
+    }
+    if (screenId === "screen-app") {
+      startThreadAnimation();
+      const currentActive = document.querySelector(".nav-tab-btn.active-tab");
+      requestAnimationFrame(() => moveNavPill(currentActive));
+    }
+  }
+
+  class juli {
+    constructor(id, x, y, label = "", isTapNode = false) {
+      this.id = id;
+      this.x = x;
+      this.y = y;
+      this.label = label;
+      this.isTapNode = isTapNode;
+    }
+  }
+
+  class itzy {
+    constructor() {
+      this.nodes = new Map();
+      this.edges = [];
+    }
+
+    addNode(id, x, y, label = "", isTapNode = false) {
+      this.nodes.set(id, new juli(id, x, y, label, isTapNode));
+    }
+
+    addEdge(fromId, toId) {
+      this.edges.push([fromId, toId]);
+    }
+  }
+
+  const julo = new itzy();
+
+  julo.addNode(0,  80,  150, "We");
+  julo.addNode(1,  165, 100, "may");
+  julo.addNode(2,  145, 200, "be");
+  julo.addNode(3,  175, 320, "far");
+  julo.addNode(4,  265, 245, "apart,");
+  julo.addNode(5,  350, 160, "but");
+  julo.addNode(6,  435, 115, "we");
+  julo.addNode(7,  420, 215, "are");
+  julo.addNode(8,  505, 195, "never");
+  julo.addNode(9,  465, 305, "distant.");
+  julo.addNode(10, 520, 385, "tap me", true);
+
+  for (let i = 0; i < 10; i++) {
+    julo.addEdge(i, i + 1);
+  }
+
+  const septfour = document.getElementById("canvas");
+  const baby = septfour.getContext("2d");
+
+  let bebe = 0;
+  let yeji = 0;
+  let ryujin = false;
+  let forever4ever = 0.0;
+  let us = 0;
+
+  function drawLine(x1, y1, x2, y2) {
+    baby.save();
+    baby.beginPath();
+    baby.moveTo(x1, y1);
+    baby.lineTo(x2, y2);
+    baby.strokeStyle = "#ffffff";
+    baby.lineWidth = 2.5;
+    baby.lineCap = "round";
+    baby.shadowColor = "rgba(255, 255, 255, 0.5)";
+    baby.shadowBlur = 6;
+    baby.stroke();
+    baby.restore();
+  }
+
+  function drawStar(ctxTarget, cx, cy, spikes, outerRadius, innerRadius, isGlowing) {
+    ctxTarget.save();
+    let rot = (Math.PI / 2) * 3;
+    let x = cx;
+    let y = cy;
+    const step = Math.PI / spikes;
+
+    ctxTarget.beginPath();
+    ctxTarget.moveTo(cx, cy - outerRadius);
+    for (let i = 0; i < spikes; i++) {
+      x = cx + Math.cos(rot) * outerRadius;
+      y = cy + Math.sin(rot) * outerRadius;
+      ctxTarget.lineTo(x, y);
+      rot += step;
+
+      x = cx + Math.cos(rot) * innerRadius;
+      y = cy + Math.sin(rot) * innerRadius;
+      ctxTarget.lineTo(x, y);
+      rot += step;
+    }
+    ctxTarget.lineTo(cx, cy - outerRadius);
+    ctxTarget.closePath();
+
+    ctxTarget.fillStyle = "#fdc500";
+    if (isGlowing) {
+      ctxTarget.shadowColor = "#fdc500";
+      ctxTarget.shadowBlur = 16;
+    } else {
+      ctxTarget.shadowColor = "rgba(253, 197, 0, 0.45)";
+      ctxTarget.shadowBlur = 6;
+    }
+    ctxTarget.fill();
+    ctxTarget.restore();
+  }
+
+  function renderFrame() {
+    baby.clearRect(0, 0, septfour.width, septfour.height);
+    us += 0.07;
+
+    for (let i = 0; i < yeji; i++) {
+      const [u, v] = julo.edges[i];
+      const start = julo.nodes.get(u);
+      const end = julo.nodes.get(v);
+      drawLine(start.x, start.y, end.x, end.y);
+    }
+
+    if (ryujin && yeji < julo.edges.length) {
+      const [u, v] = julo.edges[yeji];
+      const start = julo.nodes.get(u);
+      const end = julo.nodes.get(v);
+
+      const currX = start.x + (end.x - start.x) * forever4ever;
+      const currY = start.y + (end.y - start.y) * forever4ever;
+      drawLine(start.x, start.y, currX, currY);
+
+      forever4ever += 0.06;
+      if (forever4ever >= 1.0) {
+        forever4ever = 0.0;
+        ryujin = false;
+        yeji++;
+
+        if (yeji === 9) {
+          ryujin = true;
+        }
+      }
+    }
+
+    for (const node of julo.nodes.values()) {
+      if (node.isTapNode && yeji < 9) continue;
+
+      const isTarget = (node.id === bebe && !ryujin);
+      const isTapReady = (node.isTapNode && yeji === 10);
+      const isRevealed = (node.id < bebe) || isTapReady;
+
+      baby.globalAlpha = (isTarget || isRevealed) ? 1.0 : 0.45;
+
+      const pulseOffset = (isTarget || isTapReady) ? Math.sin(us) * 2.5 : 0;
+      const baseRadius = node.isTapNode ? 13 : 10;
+      const radius = baseRadius + pulseOffset;
+
+      drawStar(baby, node.x, node.y, 5, radius, radius * 0.45, isTarget || isTapReady);
+
+      if (node.label && (node.id < bebe || isTapReady)) {
+        baby.save();
+        baby.fillStyle = "#ffffff";
+
+        if (isTapReady) {
+          const scale = 1 + Math.sin(us) * 0.07;
+          const textX = node.x + 16;
+          const textY = node.y + 6;
+
+          baby.translate(textX, textY);
+          baby.scale(scale, scale);
+          baby.font = "600 17px 'Poppins', sans-serif";
+          baby.fillText(node.label, 0, 0);
+
+          const textWidth = baby.measureText(node.label).width;
+          baby.beginPath();
+          baby.moveTo(0, 4);
+          baby.lineTo(textWidth, 4);
+          baby.strokeStyle = "#ffffff";
+          baby.lineWidth = 1.8;
+          baby.stroke();
+        } else {
+          baby.font = "500 19px 'Poppins', sans-serif";
+          baby.fillText(node.label, node.x + 15, node.y + 6);
+        }
+
+        baby.restore();
+      }
+
+      baby.globalAlpha = 1.0;
+    }
+
+    requestAnimationFrame(renderFrame);
+  }
+
+  function getScaledCoords(clientX, clientY) {
+    const rect = septfour.getBoundingClientRect();
+    const scaleX = septfour.width / rect.width;
+    const scaleY = septfour.height / rect.height;
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  }
+
+  function isPointNearNode(px, py, node) {
+    if (node.isTapNode) {
+      return px >= node.x - 24 && px <= node.x + 105 && py >= node.y - 28 && py <= node.y + 28;
+    }
+    const dx = px - node.x;
+    const dy = py - node.y;
+    return Math.hypot(dx, dy) <= 28;
+  }
+
+  septfour.addEventListener("click", (e) => {
+    if (ryujin) return;
+
+    const coords = getScaledCoords(e.clientX, e.clientY);
+    const targetNode = julo.nodes.get(bebe);
+
+    if (targetNode && isPointNearNode(coords.x, coords.y, targetNode)) {
+      startReflectMusic();
+      playSfx("sfx-10", 0.75);
+      if (bebe === 0) {
+        bebe = 1;
+      } else if (bebe >= 1 && bebe <= 9) {
+        ryujin = true;
+        bebe++;
+      } else if (bebe === 10 && yeji === 10) {
+        juno("screen-login");
+      }
+    }
+  });
+
+  septfour.addEventListener("mousemove", (e) => {
+    if (ryujin) {
+      septfour.style.cursor = "default";
+      return;
+    }
+    const coords = getScaledCoords(e.clientX, e.clientY);
+    const targetNode = julo.nodes.get(bebe);
+
+    const hovering = targetNode && isPointNearNode(coords.x, coords.y, targetNode);
+    septfour.style.cursor = hovering ? "pointer" : "default";
+  });
+
+  setTimeout(() => {
+    juno("screen-constellation");
+    renderFrame();
+  }, 2000);
+
+  const secretInput = document.getElementById("secret-input");
+  const loginBtn = document.getElementById("login-btn");
+  const errorMsg = document.getElementById("error-msg");
+
+  let reflectFadeTimer = null;
+
+  function startReflectMusic() {
+    const reflectEl = document.getElementById("reflect-bgm");
+    if (reflectEl && reflectEl.paused) {
+      if (reflectFadeTimer) {
+        clearInterval(reflectFadeTimer);
+        reflectFadeTimer = null;
+      }
+      reflectEl.volume = 0.3;
+      reflectEl.play().catch(() => {});
+    }
+  }
+
+  function fadeOutReflectMusic() {
+    const reflectEl = document.getElementById("reflect-bgm");
+    if (!reflectEl || reflectEl.paused) return;
+    if (reflectFadeTimer) clearInterval(reflectFadeTimer);
+    reflectFadeTimer = setInterval(() => {
+      if (reflectEl.volume > 0.03) {
+        reflectEl.volume = Math.max(0, reflectEl.volume - 0.03);
+      } else {
+        reflectEl.volume = 0;
+        reflectEl.pause();
+        reflectEl.currentTime = 0;
+        clearInterval(reflectFadeTimer);
+        reflectFadeTimer = null;
+      }
+    }, 80);
+  }
+
+  function startAppBgMusic() {
+    if (reflectFadeTimer) {
+      clearInterval(reflectFadeTimer);
+      reflectFadeTimer = null;
+    }
+    const reflectEl = document.getElementById("reflect-bgm");
+    if (reflectEl) {
+      reflectEl.pause();
+      reflectEl.currentTime = 0;
+    }
+    const bgEl = document.getElementById("app-bgm");
+    if (bgEl) {
+      bgEl.volume = 0.3;
+      bgEl.play().catch(() => {});
+    }
+  }
+
+  function verifyLogin() {
+    const val = secretInput.value.trim().toLowerCase();
+    if (val === "constant") {
+      errorMsg.textContent = "";
+      startAppBgMusic();
+      juno("screen-app");
+    } else {
+      errorMsg.textContent = "Wrong name! I'll love you despite everything because you are my what?";
+    }
+  }
+
+  loginBtn.addEventListener("click", verifyLogin);
+  secretInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") verifyLogin();
+  });
+
+  let notebookTypingTimer = null;
+  let notebookHasTyped = false;
+
+  function resetDatesViewState() {
+    document.querySelectorAll("#view-dates [data-step]").forEach(el => {
+      const step = parseInt(el.getAttribute("data-step"), 10);
+      if (step === 0) {
+        el.classList.remove("locked-date");
+        el.classList.add("revealed-date");
+      } else {
+        el.classList.add("locked-date");
+        el.classList.remove("revealed-date");
+      }
+      const hint = el.querySelector(".tap-next-hint");
+      if (hint) hint.style.display = "";
+    });
+  }
+
+  function startNotebookWritingAnimation(forceRestart = false) {
+    const target = document.getElementById("notebook-animated-text");
+    if (!target) return;
+    if (notebookHasTyped && !forceRestart) return;
+
+    if (notebookTypingTimer) {
+      clearInterval(notebookTypingTimer);
+      notebookTypingTimer = null;
+    }
+
+    const message = "time is an illusion when we're together";
+    let idx = 0;
+    target.innerHTML = '<span class="notebook-cursor"></span>';
+
+    const writeSfx = document.getElementById("sfx-6");
+    if (writeSfx) {
+      writeSfx.loop = true;
+      writeSfx.volume = 0.5;
+      writeSfx.currentTime = 0;
+      writeSfx.play().catch(() => {});
+    }
+
+    notebookTypingTimer = setInterval(() => {
+      idx++;
+      if (idx <= message.length) {
+        const typedPart = escapeHtml(message.slice(0, idx));
+        target.innerHTML = typedPart + '<span class="notebook-cursor"></span>';
+      } else {
+        clearInterval(notebookTypingTimer);
+        notebookTypingTimer = null;
+        notebookHasTyped = true;
+        target.textContent = message;
+        if (writeSfx) {
+          writeSfx.pause();
+          writeSfx.currentTime = 0;
+        }
+      }
+    }, 95);
+  }
+
+  function revealCreditsLines() {
+    const items = document.querySelectorAll("#credits-lines-list .credit-line-item");
+    items.forEach((el, i) => {
+      el.classList.remove("revealed-credit");
+      setTimeout(() => {
+        el.classList.add("revealed-credit");
+        playSfx("sfx-1");
+      }, 180 + i * 260);
+    });
+  }
+
+  document.querySelectorAll(".nav-tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      playSfx("sfx-2");
+      document.querySelectorAll(".nav-tab-btn").forEach(b => b.classList.remove("active-tab"));
+      document.querySelectorAll(".tab-view").forEach(v => v.classList.remove("active-view"));
+      btn.classList.add("active-tab");
+      moveNavPill(btn);
+      const targetId = btn.getAttribute("data-view");
+      document.getElementById(targetId).classList.add("active-view");
+      if (targetId === "view-home") {
+        startThreadAnimation();
+      }
+      if (targetId === "view-dates") {
+        resetDatesViewState();
+        startNotebookWritingAnimation(true);
+      } else {
+        const writeSfx = document.getElementById("sfx-6");
+        if (writeSfx && !writeSfx.paused) {
+          writeSfx.pause();
+        }
+      }
+      if (targetId === "view-credits") {
+        revealCreditsLines();
+      }
+      if (targetId === "view-sky") {
+        const picker = document.getElementById("sky-picker-grid");
+        const arena = document.getElementById("sky-arena-wrap");
+        if (picker) picker.style.display = "flex";
+        if (arena) arena.style.display = "none";
+      } else if (typeof stopSkyGameLoop === "function") {
+        stopSkyGameLoop();
+      }
+    });
+  });
+
+  window.addEventListener("resize", () => {
+    const currentActive = document.querySelector(".nav-tab-btn.active-tab");
+    moveNavPill(currentActive);
+  });
+
+  const JAR_PALETTE = [
+    "#ffadad",
+    "#ffd6a5",
+    "#fdffb6",
+    "#caffbf",
+    "#9bf6ff",
+    "#a0c4ff",
+    "#bdb2ff",
+    "#ffc6ff"
+  ];
+
+  const JAR_STORAGE_KEY = "endless_heart_jar_bucket_list_v2";
+
+  const DEFAULT_JAR_ITEMS = [
+    { id: "j1", text: "travel to Japan", color: "#ffadad", pos: { bottom: 6, left: 8, rot: -14 } },
+    { id: "j2", text: "travel the world", color: "#ffd6a5", pos: { bottom: 8, left: 42, rot: 11 } },
+    { id: "j3", text: "make our passport stronger together", color: "#fdffb6", pos: { bottom: 10, left: 70, rot: -8 } },
+    { id: "j4", text: "get married", color: "#caffbf", pos: { bottom: 26, left: 18, rot: 15 } },
+    { id: "j5", text: "get our own apartment", color: "#9bf6ff", pos: { bottom: 28, left: 54, rot: -12 } },
+    { id: "j6", text: "graduate", color: "#a0c4ff", pos: { bottom: 44, left: 10, rot: 9 } },
+    { id: "j7", text: "taste llaolao", color: "#bdb2ff", pos: { bottom: 46, left: 44, rot: -16 } },
+    { id: "j8", text: "rides", color: "#ffc6ff", pos: { bottom: 48, left: 72, rot: 12 } },
+    { id: "j9", text: "be w u again", color: "#ffadad", pos: { bottom: 64, left: 24, rot: -7 } },
+    { id: "j10", text: "get rich", color: "#fdffb6", pos: { bottom: 66, left: 58, rot: 14 } }
+  ];
+
+  let isJarOpen = false;
+  let selectedJarColor = JAR_PALETTE[0];
+  let draggedJarItemId = null;
+  let newlyAddedJarId = null;
+  let jarItems = [];
+
+  function loadJarItems() {
+    try {
+      const saved = localStorage.getItem(JAR_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          jarItems = parsed;
+          return;
+        }
+      }
+    } catch (e) {}
+    jarItems = [...DEFAULT_JAR_ITEMS];
+  }
+
+  function saveJarItems() {
+    try {
+      localStorage.setItem(JAR_STORAGE_KEY, JSON.stringify(jarItems));
+    } catch (e) {}
+  }
+
+  function initJarUI() {
+    loadJarItems();
+    renderJarPalette();
+    renderJarSlips();
+
+    const dropStage = document.getElementById("unfolded-note-stage");
+    if (dropStage) {
+      dropStage.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropStage.classList.add("drop-active");
+      });
+
+      dropStage.addEventListener("dragleave", () => {
+        dropStage.classList.remove("drop-active");
+      });
+
+      dropStage.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropStage.classList.remove("drop-active");
+        const id = e.dataTransfer.getData("text/plain") || draggedJarItemId;
+        if (id) {
+          pullAndUnfoldJarItem(id);
+        }
+      });
+    }
+
+    const goalInput = document.getElementById("jar-goal-input");
+    if (goalInput) {
+      goalInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") addNewJarGoal();
+      });
+    }
+  }
+
+  function renderJarPalette() {
+    const container = document.getElementById("jar-palette-dots");
+    if (!container) return;
+    container.innerHTML = "";
+    JAR_PALETTE.forEach(hex => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "jar-color-dot" + (hex === selectedJarColor ? " selected-color" : "");
+      dot.style.backgroundColor = hex;
+      dot.onclick = () => {
+        selectedJarColor = hex;
+        renderJarPalette();
+      };
+      container.appendChild(dot);
+    });
+  }
+
+  function renderJarSlips() {
+    const container = document.getElementById("jar-slips-container");
+    if (!container) return;
+    container.innerHTML = "";
+
+    jarItems.forEach((item, idx) => {
+      const slip = document.createElement("div");
+      slip.className = "jar-folded-slip";
+      if (item.id === newlyAddedJarId) {
+        slip.classList.add("jar-slip-fly-in");
+      }
+      slip.innerHTML = `<svg viewBox="0 0 100 100"><polygon points="50,6 63,36 95,39 71,60 78,92 50,75 22,92 29,60 5,39 37,36" fill="${item.color}" stroke="rgba(61,0,102,0.45)" stroke-width="4" stroke-linejoin="round"/></svg>`;
+      slip.style.bottom = item.pos.bottom + "%";
+      slip.style.left = item.pos.left + "%";
+      slip.style.transform = `rotate(${item.pos.rot}deg)`;
+      slip.style.zIndex = 2 + (idx % 5);
+      slip.draggable = isJarOpen;
+
+      slip.addEventListener("dragstart", (e) => {
+        if (!isJarOpen) {
+          e.preventDefault();
+          return;
+        }
+        draggedJarItemId = item.id;
+        e.dataTransfer.setData("text/plain", item.id);
+      });
+
+      slip.addEventListener("dragend", () => {
+        draggedJarItemId = null;
+      });
+
+      slip.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (!isJarOpen) {
+          setJarOpen(true);
+          return;
+        }
+        pullAndUnfoldJarItem(item.id, slip);
+      });
+
+      container.appendChild(slip);
+    });
+
+    newlyAddedJarId = null;
+  }
+
+  function toggleJar(e) {
+    if (e) e.stopPropagation();
+    setJarOpen(!isJarOpen);
+  }
+
+  function handleJarStageClick(e) {
+    if (!isJarOpen) {
+      setJarOpen(true);
+    } else {
+      if (jarItems.length > 0) {
+        const randomItem = jarItems[Math.floor(Math.random() * jarItems.length)];
+        pullAndUnfoldJarItem(randomItem.id);
+      }
+    }
+  }
+
+  function setJarOpen(open) {
+    const wasJarOpen = isJarOpen;
+    isJarOpen = open;
+    const img = document.getElementById("jar-main-img");
+    const overlayImg = document.getElementById("jar-overlay-img");
+    const btn = document.getElementById("btn-toggle-jar");
+    const stage = document.getElementById("jar-stage");
+
+    if (stage) {
+      stage.classList.remove("jar-shake");
+      void stage.offsetWidth;
+      stage.classList.add("jar-shake");
+    }
+
+    if (wasJarOpen !== open) {
+      playSfx("pop-audio");
+    }
+
+    if (open) {
+      img.src = "images/ojar.png";
+      if (overlayImg) overlayImg.src = "images/ojar.png";
+      if (btn) btn.textContent = "CLOSE JAR";
+    } else {
+      img.src = "images/cjar.png";
+      if (overlayImg) overlayImg.src = "images/cjar.png";
+      if (btn) btn.textContent = "OPEN JAR";
+    }
+    renderJarSlips();
+  }
+
+  function pullAndUnfoldJarItem(itemId, slipEl = null) {
+    const item = jarItems.find(i => i.id === itemId);
+    if (!item) return;
+
+    if (slipEl) {
+      slipEl.classList.add("pulling-out");
+    }
+
+    setTimeout(() => {
+      if (slipEl) {
+        slipEl.classList.remove("pulling-out");
+      }
+      const dropStage = document.getElementById("unfolded-note-stage");
+      if (!dropStage) return;
+
+      dropStage.innerHTML = `
+        <div class="unfolded-paper-card" style="background-color: ${item.color};">
+          <p class="unfolded-paper-text">${escapeHtml(item.text)}</p>
+          <span class="unfolded-paper-tag">someday together ♥</span>
+        </div>
+      `;
+    }, slipEl ? 320 : 80);
+  }
+
+  function addNewJarGoal() {
+    const input = document.getElementById("jar-goal-input");
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) return;
+
+    if (!isJarOpen) {
+      setJarOpen(true);
+    }
+
+    const newItem = {
+      id: "j_" + Date.now(),
+      text: text,
+      color: selectedJarColor,
+      pos: {
+        bottom: Math.floor(8 + Math.random() * 64),
+        left: Math.floor(8 + Math.random() * 58),
+        rot: Math.floor(-22 + Math.random() * 44)
+      }
+    };
+
+    jarItems.push(newItem);
+    newlyAddedJarId = newItem.id;
+    saveJarItems();
+    input.value = "";
+    renderJarSlips();
+  }
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  let skyMode = "stars";
+  let skyAnimId = null;
+  let skyRunning = false;
+
+  const yejiRunnerImg = new Image();
+  yejiRunnerImg.src = "images/yeji.png";
+
+  const skyCanvas = document.getElementById("sky-game-canvas");
+  const skyCtx = skyCanvas ? skyCanvas.getContext("2d") : null;
+
+  const bgTwinkleStars = Array.from({ length: 42 }, () => ({
+    x: Math.random() * 720,
+    y: Math.random() * 320,
+    r: 0.8 + Math.random() * 1.8,
+    phase: Math.random() * Math.PI * 2
+  }));
+
+  let starBasket = { x: 360, y: 342, w: 88, h: 24 };
+  let fallingStars = [];
+  let starsCaught = 0;
+  let starSpawnTimer = 0;
+
+  const YEJI_W = 45;
+  const YEJI_H = 80;
+  const RUNNER_GROUND_TOP = 356;
+  const RUNNER_GROUND_Y = RUNNER_GROUND_TOP - YEJI_H / 2;
+  let yejiPlayer = {
+    x: 115,
+    y: RUNNER_GROUND_Y,
+    w: YEJI_W,
+    h: YEJI_H,
+    vy: 0,
+    grounded: true,
+    jumpsUsed: 0,
+    tilt: 0
+  };
+  let runnerObstacles = [];
+  let runnerHearts = [];
+  let runnerParticles = [];
+  let runnerSpawnTimer = 0;
+  let runnerHeartTimer = 1.4;
+  let runnerElapsed = 0;
+  let runnerLastTs = 0;
+  let groundScroll = 0;
+  let bonusHeartsCaught = 0;
+
+  const skyKeys = { left: false, right: false };
+
+  window.addEventListener("keydown", (e) => {
+    const skyView = document.getElementById("view-sky");
+    if (!skyView || !skyView.classList.contains("active-view")) return;
+
+    if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") skyKeys.left = true;
+    if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") skyKeys.right = true;
+    if ((e.key === " " || e.key === "ArrowUp" || e.key === "w" || e.key === "W") && skyMode === "runner" && skyRunning) {
+      e.preventDefault();
+      jumpYeji();
+    }
+  });
+
+  window.addEventListener("keyup", (e) => {
+    if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") skyKeys.left = false;
+    if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") skyKeys.right = false;
+  });
+
+  if (skyCanvas) {
+    const moveBasketFromClientX = (clientX) => {
+      const rect = skyCanvas.getBoundingClientRect();
+      const relX = ((clientX - rect.left) / rect.width) * skyCanvas.width;
+      starBasket.x = Math.max(starBasket.w / 2 + 12, Math.min(skyCanvas.width - starBasket.w / 2 - 12, relX));
+    };
+
+    skyCanvas.addEventListener("mousemove", (e) => {
+      if (skyMode === "stars" && skyRunning) {
+        moveBasketFromClientX(e.clientX);
+      }
+    });
+
+    skyCanvas.addEventListener("touchmove", (e) => {
+      if (skyMode === "stars" && skyRunning && e.touches[0]) {
+        e.preventDefault();
+        moveBasketFromClientX(e.touches[0].clientX);
+      }
+    }, { passive: false });
+
+    skyCanvas.addEventListener("mousedown", (e) => {
+      if (!skyRunning) return;
+      if (skyMode === "runner") {
+        jumpYeji();
+      } else {
+        moveBasketFromClientX(e.clientX);
+      }
+    });
+
+    skyCanvas.addEventListener("touchstart", (e) => {
+      if (!skyRunning) return;
+      if (skyMode === "runner") {
+        e.preventDefault();
+        jumpYeji();
+      } else if (e.touches[0]) {
+        moveBasketFromClientX(e.touches[0].clientX);
+      }
+    }, { passive: false });
+  }
+
+  function spawnRunnerSparkles(cx, cy, color, count = 10) {
+    for (let i = 0; i < count; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const spd = 45 + Math.random() * 130;
+      runnerParticles.push({
+        x: cx,
+        y: cy,
+        vx: Math.cos(ang) * spd,
+        vy: Math.sin(ang) * spd - 35,
+        life: 0.45 + Math.random() * 0.25,
+        maxLife: 0.7,
+        size: 2.5 + Math.random() * 3,
+        color
+      });
+    }
+  }
+
+  function jumpYeji() {
+    if (yejiPlayer.grounded || yejiPlayer.jumpsUsed < 2) {
+      yejiPlayer.vy = yejiPlayer.jumpsUsed === 0 ? -12.6 : -11.2;
+      yejiPlayer.grounded = false;
+      yejiPlayer.jumpsUsed++;
+      playSfx("sfx-5");
+      spawnRunnerSparkles(
+        yejiPlayer.x,
+        yejiPlayer.y + yejiPlayer.h / 2,
+        yejiPlayer.jumpsUsed === 2 ? "#ff85c0" : "#fdc500",
+        yejiPlayer.jumpsUsed === 2 ? 14 : 8
+      );
+    }
+  }
+
+  function stopSkyGameLoop() {
+    skyRunning = false;
+    if (skyAnimId) {
+      cancelAnimationFrame(skyAnimId);
+      skyAnimId = null;
+    }
+  }
+
+  function configureSkyCanvasAspect(mode) {
+    const card = document.querySelector(".sky-canvas-card");
+    if (!skyCanvas || !card) return;
+    const isMobile = window.innerWidth <= 680;
+    if (mode === "stars" && isMobile) {
+      skyCanvas.width = 405;
+      skyCanvas.height = 720;
+      card.classList.add("mobile-portrait-sky");
+      starBasket.y = 635;
+      starBasket.x = 202;
+    } else {
+      skyCanvas.width = 720;
+      skyCanvas.height = 405;
+      card.classList.remove("mobile-portrait-sky");
+      starBasket.y = 342;
+      starBasket.x = skyCanvas ? skyCanvas.width / 2 : 360;
+    }
+    bgTwinkleStars.forEach(s => {
+      s.x = Math.random() * skyCanvas.width;
+      s.y = Math.random() * (skyCanvas.height * 0.8);
+    });
+  }
+
+  function chooseSkySquare(mode) {
+    playSfx("sfx-2");
+    const picker = document.getElementById("sky-picker-grid");
+    const arena = document.getElementById("sky-arena-wrap");
+    if (picker) picker.style.display = "none";
+    if (arena) arena.style.display = "flex";
+    configureSkyCanvasAspect(mode);
+    selectSkyGame(mode);
+  }
+
+  function backToSkySquares() {
+    playSfx("sfx-2");
+    stopSkyGameLoop();
+    const picker = document.getElementById("sky-picker-grid");
+    const arena = document.getElementById("sky-arena-wrap");
+    if (arena) arena.style.display = "none";
+    if (picker) picker.style.display = "flex";
+  }
+
+  function selectSkyGame(mode) {
+    stopSkyGameLoop();
+    skyMode = mode;
+
+    const titleEl = document.getElementById("sky-overlay-title");
+    const descEl = document.getElementById("sky-overlay-desc");
+    const rewardEl = document.getElementById("sky-win-reward");
+    const startBtn = document.getElementById("sky-start-btn");
+    const hudLeft = document.getElementById("sky-hud-left");
+    const hudRight = document.getElementById("sky-hud-right");
+    const hintEl = document.getElementById("sky-controls-hint");
+    const overlay = document.getElementById("sky-overlay");
+
+    rewardEl.style.display = "none";
+    startBtn.textContent = "start game";
+    overlay.classList.remove("hidden");
+
+    if (mode === "stars") {
+      titleEl.textContent = "catch the stars";
+      descEl.textContent = "Catch 15 falling stars across the sky bridging Mariveles, Bataan and Sumilang, Pasig.";
+      hudLeft.textContent = "Stars: 0 / 15";
+      hudRight.textContent = "0 / 60 km";
+      hintEl.textContent = "move mouse, touch, or ← → keys to catch the stars";
+    } else {
+      titleEl.textContent = "yeji run away";
+      descEl.textContent = "Help Yeji jump over obstacles for 30 seconds along the 60 km road from Mariveles to Pasig!";
+      hudLeft.textContent = "Time: 30.0s";
+      hudRight.textContent = "0 / 60 km";
+      hintEl.textContent = "tap screen, click, or press Space / ↑ to jump";
+    }
+
+    drawSkyIdleBackdrop();
+  }
+
+  function startSkyGame() {
+    stopSkyGameLoop();
+    document.getElementById("sky-overlay").classList.add("hidden");
+    document.getElementById("sky-win-reward").style.display = "none";
+
+    skyRunning = true;
+    runnerLastTs = performance.now();
+
+    if (skyMode === "stars") {
+      starsCaught = 0;
+      fallingStars = [];
+      starSpawnTimer = 0;
+      starBasket.x = skyCanvas ? skyCanvas.width / 2 : 360;
+      updateSkyHud();
+    } else {
+      yejiPlayer = {
+        x: 115,
+        y: RUNNER_GROUND_Y,
+        w: YEJI_W,
+        h: YEJI_H,
+        vy: 0,
+        grounded: true,
+        jumpsUsed: 0,
+        tilt: 0
+      };
+      runnerObstacles = [];
+      runnerHearts = [];
+      runnerParticles = [];
+      runnerSpawnTimer = 0.65;
+      runnerHeartTimer = 1.3;
+      runnerElapsed = 0;
+      groundScroll = 0;
+      bonusHeartsCaught = 0;
+      updateSkyHud();
+    }
+
+    skyAnimId = requestAnimationFrame(stepSkyGame);
+  }
+
+  function finishSkyGame(didWin) {
+    stopSkyGameLoop();
+
+    const overlay = document.getElementById("sky-overlay");
+    const titleEl = document.getElementById("sky-overlay-title");
+    const descEl = document.getElementById("sky-overlay-desc");
+    const rewardEl = document.getElementById("sky-win-reward");
+    const startBtn = document.getElementById("sky-start-btn");
+
+    if (didWin) {
+      playSfx("sfx-3");
+      titleEl.textContent = "60 km bridged!";
+      descEl.textContent = skyMode === "stars"
+        ? "You caught all 15 stars lighting up the sky from Mariveles to Pasig!"
+        : "Yeji cleared the whole 30-second run from Mariveles to Pasig!";
+      rewardEl.textContent = "you are now a minute closer to our next hangout";
+      rewardEl.style.display = "block";
+      startBtn.textContent = "play again";
+    } else {
+      playSfx("sfx-4");
+      titleEl.textContent = "oops, tripped!";
+      descEl.textContent = "Yeji bumped into an obstacle on the way to Pasig. Try again!";
+      rewardEl.style.display = "none";
+      startBtn.textContent = "try again";
+    }
+
+    overlay.classList.remove("hidden");
+  }
+
+  function updateSkyHud() {
+    const hudLeft = document.getElementById("sky-hud-left");
+    const hudRight = document.getElementById("sky-hud-right");
+    if (!hudLeft || !hudRight) return;
+
+    if (skyMode === "stars") {
+      const km = Math.min(60, Math.round((starsCaught / 15) * 60));
+      hudLeft.textContent = `Stars: ${starsCaught} / 15`;
+      hudRight.textContent = `${km} / 60 km`;
+    } else {
+      const remaining = Math.max(0, 30 - runnerElapsed);
+      const km = Math.min(60, Math.round((runnerElapsed / 30) * 60));
+      hudLeft.textContent = `Time: ${remaining.toFixed(1)}s`;
+      hudRight.textContent = `${km} / 60 km`;
+    }
+  }
+
+  function drawSkyBackground(progressRatio) {
+    if (!skyCtx) return;
+    const w = skyCanvas.width;
+    const h = skyCanvas.height;
+
+    const grad = skyCtx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, "#24003d");
+    grad.addColorStop(0.65, "#4a007a");
+    grad.addColorStop(1, "#6b129e");
+    skyCtx.fillStyle = grad;
+    skyCtx.fillRect(0, 0, w, h);
+
+    const now = performance.now() * 0.003;
+    bgTwinkleStars.forEach(s => {
+      const alpha = 0.35 + 0.55 * Math.abs(Math.sin(now + s.phase));
+      skyCtx.fillStyle = `rgba(255, 248, 220, ${alpha.toFixed(2)})`;
+      skyCtx.beginPath();
+      skyCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      skyCtx.fill();
+    });
+
+    const barW = Math.min(240, w - 48);
+    const barH = 6;
+    const barX = (w - barW) / 2;
+    const barY = 52;
+    skyCtx.fillStyle = "rgba(255, 255, 255, 0.2)";
+    skyCtx.beginPath();
+    skyCtx.roundRect(barX, barY, barW, barH, 999);
+    skyCtx.fill();
+
+    skyCtx.fillStyle = "#fdc500";
+    skyCtx.beginPath();
+    skyCtx.roundRect(barX, barY, Math.max(8, barW * Math.min(1, progressRatio)), barH, 999);
+    skyCtx.fill();
+
+    skyCtx.fillStyle = "rgba(255,255,255,0.85)";
+    skyCtx.font = "600 10px 'Poppins', sans-serif";
+    skyCtx.textAlign = "left";
+    skyCtx.fillText("Mariveles", barX, barY - 5);
+    skyCtx.textAlign = "right";
+    skyCtx.fillText("Pasig", barX + barW, barY - 5);
+  }
+
+  function drawSkyIdleBackdrop() {
+    drawSkyBackground(0);
+    if (!skyCtx) return;
+    if (skyMode === "runner") {
+      drawRunnerGround();
+      drawYejiRunner();
+    }
+  }
+
+  function drawRunnerGround() {
+    const w = skyCanvas.width;
+    const h = skyCanvas.height;
+    const groundTop = RUNNER_GROUND_TOP;
+
+    skyCtx.save();
+    skyCtx.fillStyle = "rgba(32, 0, 56, 0.55)";
+    skyCtx.beginPath();
+    skyCtx.moveTo(0, groundTop);
+    for (let hx = 0; hx <= w + 60; hx += 60) {
+      const wave = Math.sin((hx + groundScroll * 0.22) * 0.015) * 18 + Math.cos((hx + groundScroll * 0.22) * 0.008) * 14;
+      skyCtx.lineTo(hx, groundTop - 26 - wave);
+    }
+    skyCtx.lineTo(w, groundTop);
+    skyCtx.closePath();
+    skyCtx.fill();
+    skyCtx.restore();
+
+    skyCtx.fillStyle = "#2d004d";
+    skyCtx.fillRect(0, groundTop, w, h - groundTop);
+
+    skyCtx.strokeStyle = "#fdc500";
+    skyCtx.lineWidth = 2.5;
+    skyCtx.beginPath();
+    skyCtx.moveTo(0, groundTop);
+    skyCtx.lineTo(w, groundTop);
+    skyCtx.stroke();
+
+    skyCtx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    skyCtx.lineWidth = 2;
+    skyCtx.setLineDash([18, 18]);
+    skyCtx.lineDashOffset = groundScroll;
+    skyCtx.beginPath();
+    skyCtx.moveTo(0, groundTop + 20);
+    skyCtx.lineTo(w, groundTop + 20);
+    skyCtx.stroke();
+    skyCtx.setLineDash([]);
+  }
+
+  function drawMiniHeart(cx, cy, size, color) {
+    skyCtx.save();
+    skyCtx.translate(cx, cy);
+    skyCtx.fillStyle = color;
+    skyCtx.shadowColor = color;
+    skyCtx.shadowBlur = 10;
+    skyCtx.beginPath();
+    skyCtx.moveTo(0, size * 0.35);
+    skyCtx.bezierCurveTo(-size * 0.9, -size * 0.35, -size * 0.45, -size * 0.95, 0, -size * 0.45);
+    skyCtx.bezierCurveTo(size * 0.45, -size * 0.95, size * 0.9, -size * 0.35, 0, size * 0.35);
+    skyCtx.fill();
+    skyCtx.restore();
+  }
+
+  function drawYejiRunner() {
+    const { x, y, w, h, grounded, vy } = yejiPlayer;
+    const left = x - w / 2;
+    const top = y - h / 2;
+    const radius = 10;
+
+    const heightAboveGround = Math.max(0, RUNNER_GROUND_Y - y);
+    const shadowScale = Math.max(0.45, 1 - heightAboveGround / 180);
+    skyCtx.save();
+    skyCtx.fillStyle = `rgba(18, 0, 34, ${(0.45 * shadowScale).toFixed(2)})`;
+    skyCtx.beginPath();
+    skyCtx.ellipse(x, RUNNER_GROUND_TOP + 4, (w * 0.55) * shadowScale, 5 * shadowScale, 0, 0, Math.PI * 2);
+    skyCtx.fill();
+    skyCtx.restore();
+
+    skyCtx.save();
+    const bobOffset = grounded && skyRunning ? Math.sin(performance.now() * 0.022) * 2.5 : 0;
+    const tiltAngle = grounded ? 0 : Math.max(-0.16, Math.min(0.16, vy * 0.012));
+
+    skyCtx.translate(x, y + bobOffset);
+    skyCtx.rotate(tiltAngle);
+
+    if (yejiRunnerImg.complete && yejiRunnerImg.naturalWidth > 0) {
+      const iw = yejiRunnerImg.naturalWidth;
+      const ih = yejiRunnerImg.naturalHeight;
+      const scale = Math.min((w * 1.25) / iw, h / ih);
+      const dw = iw * scale;
+      const dh = ih * scale;
+      skyCtx.drawImage(yejiRunnerImg, -dw / 2, -dh / 2, dw, dh);
+    }
+    skyCtx.restore();
+  }
+
+  function stepSkyGame(ts) {
+    if (!skyRunning || !skyCtx) return;
+    const dt = Math.min(0.05, (ts - runnerLastTs) / 1000);
+    runnerLastTs = ts;
+
+    if (skyMode === "stars") {
+      if (skyKeys.left) starBasket.x -= 430 * dt;
+      if (skyKeys.right) starBasket.x += 430 * dt;
+      starBasket.x = Math.max(starBasket.w / 2 + 12, Math.min(skyCanvas.width - starBasket.w / 2 - 12, starBasket.x));
+
+      starSpawnTimer -= dt;
+      if (starSpawnTimer <= 0) {
+        starSpawnTimer = 0.68;
+        fallingStars.push({
+          x: 40 + Math.random() * (skyCanvas.width - 80),
+          y: -18,
+          r: 13,
+          vy: 175 + Math.random() * 95,
+          rot: Math.random() * Math.PI
+        });
+      }
+
+      drawSkyBackground(starsCaught / 15);
+
+      for (let i = fallingStars.length - 1; i >= 0; i--) {
+        const st = fallingStars[i];
+        st.y += st.vy * dt;
+        st.rot += 2.2 * dt;
+
+        const caughtX = Math.abs(st.x - starBasket.x) <= (starBasket.w / 2 + st.r * 0.7);
+        const caughtY = st.y + st.r >= starBasket.y - 6 && st.y - st.r <= starBasket.y + starBasket.h;
+
+        if (caughtX && caughtY) {
+          fallingStars.splice(i, 1);
+          starsCaught++;
+          playSfx("sfx-1");
+          updateSkyHud();
+          if (starsCaught >= 15) {
+            finishSkyGame(true);
+            return;
+          }
+          continue;
+        }
+
+        if (st.y > skyCanvas.height + 24) {
+          fallingStars.splice(i, 1);
+          continue;
+        }
+
+        skyCtx.save();
+        skyCtx.translate(st.x, st.y);
+        skyCtx.rotate(st.rot);
+        drawStar(skyCtx, 0, 0, 5, st.r, st.r * 0.45, true);
+        skyCtx.restore();
+      }
+
+      skyCtx.save();
+      skyCtx.fillStyle = "#ffffff";
+      skyCtx.strokeStyle = "#fdc500";
+      skyCtx.lineWidth = 3;
+      skyCtx.shadowColor = "rgba(253, 197, 0, 0.55)";
+      skyCtx.shadowBlur = 12;
+      skyCtx.beginPath();
+      skyCtx.roundRect(starBasket.x - starBasket.w / 2, starBasket.y, starBasket.w, starBasket.h, [4, 4, 16, 16]);
+      skyCtx.fill();
+      skyCtx.stroke();
+
+      skyCtx.fillStyle = "#510087";
+      skyCtx.font = "700 13px 'Poppins', sans-serif";
+      skyCtx.textAlign = "center";
+      skyCtx.fillText("♥", starBasket.x, starBasket.y + 17);
+      skyCtx.restore();
+
+    } else {
+      runnerElapsed += dt;
+      updateSkyHud();
+
+      if (runnerElapsed >= 30) {
+        drawSkyBackground(1);
+        drawRunnerGround();
+        drawYejiRunner();
+        finishSkyGame(true);
+        return;
+      }
+
+      const speed = 320 + runnerElapsed * 4.5;
+      groundScroll += speed * dt;
+
+      yejiPlayer.vy += 35 * dt;
+      yejiPlayer.y += yejiPlayer.vy;
+      if (yejiPlayer.y >= RUNNER_GROUND_Y) {
+        yejiPlayer.y = RUNNER_GROUND_Y;
+        yejiPlayer.vy = 0;
+        yejiPlayer.grounded = true;
+        yejiPlayer.jumpsUsed = 0;
+      }
+
+      runnerSpawnTimer -= dt;
+      if (runnerSpawnTimer <= 0) {
+        runnerSpawnTimer = 1.2 + Math.random() * 0.85;
+        const tall = Math.random() > 0.45;
+        runnerObstacles.push({
+          x: skyCanvas.width + 30,
+          w: tall ? 24 : 32,
+          h: tall ? 46 : 32,
+          icon: tall ? "🌵" : "🚧"
+        });
+      }
+
+      runnerHeartTimer -= dt;
+      if (runnerHeartTimer <= 0) {
+        runnerHeartTimer = 1.6 + Math.random() * 1.4;
+        runnerHearts.push({
+          x: skyCanvas.width + 24,
+          y: RUNNER_GROUND_TOP - (65 + Math.random() * 95),
+          size: 13,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+
+      drawSkyBackground(runnerElapsed / 30);
+      drawRunnerGround();
+
+      const groundTop = RUNNER_GROUND_TOP;
+      const pLeft = yejiPlayer.x - yejiPlayer.w / 2 + 7;
+      const pRight = yejiPlayer.x + yejiPlayer.w / 2 - 7;
+      const pTop = yejiPlayer.y - yejiPlayer.h / 2 + 6;
+      const pBottom = yejiPlayer.y + yejiPlayer.h / 2 - 4;
+
+      for (let i = runnerHearts.length - 1; i >= 0; i--) {
+        const ht = runnerHearts[i];
+        ht.x -= speed * 0.92 * dt;
+        const bobY = ht.y + Math.sin(performance.now() * 0.006 + ht.phase) * 5;
+        drawMiniHeart(ht.x, bobY, ht.size, "#ff7eb9");
+
+        if (
+          ht.x + ht.size > pLeft &&
+          ht.x - ht.size < pRight &&
+          bobY + ht.size > pTop &&
+          bobY - ht.size < pBottom
+        ) {
+          bonusHeartsCaught++;
+          playSfx("sfx-1");
+          spawnRunnerSparkles(ht.x, bobY, "#ff7eb9", 12);
+          runnerHearts.splice(i, 1);
+          continue;
+        }
+
+        if (ht.x < -30) {
+          runnerHearts.splice(i, 1);
+        }
+      }
+
+      for (let i = runnerObstacles.length - 1; i >= 0; i--) {
+        const obs = runnerObstacles[i];
+        obs.x -= speed * dt;
+
+        const obsTop = groundTop - obs.h;
+
+        skyCtx.save();
+        skyCtx.fillStyle = "#fdc500";
+        skyCtx.strokeStyle = "#24003d";
+        skyCtx.lineWidth = 2;
+        skyCtx.beginPath();
+        skyCtx.roundRect(obs.x, obsTop, obs.w, obs.h, 7);
+        skyCtx.fill();
+        skyCtx.stroke();
+
+        skyCtx.font = "18px 'Poppins', sans-serif";
+        skyCtx.textAlign = "center";
+        skyCtx.fillText(obs.icon, obs.x + obs.w / 2, obsTop + obs.h * 0.72);
+        skyCtx.restore();
+
+        const oLeft = obs.x + 4;
+        const oRight = obs.x + obs.w - 4;
+        const oTop = obsTop + 4;
+        const oBottom = groundTop;
+
+        if (pRight > oLeft && pLeft < oRight && pBottom > oTop && pTop < oBottom) {
+          drawYejiRunner();
+          finishSkyGame(false);
+          return;
+        }
+
+        if (obs.x + obs.w < -20) {
+          runnerObstacles.splice(i, 1);
+        }
+      }
+
+      for (let i = runnerParticles.length - 1; i >= 0; i--) {
+        const pt = runnerParticles[i];
+        pt.x += pt.vx * dt;
+        pt.y += pt.vy * dt;
+        pt.vy += 180 * dt;
+        pt.life -= dt;
+        if (pt.life <= 0) {
+          runnerParticles.splice(i, 1);
+          continue;
+        }
+        skyCtx.save();
+        skyCtx.globalAlpha = Math.max(0, pt.life / pt.maxLife);
+        skyCtx.fillStyle = pt.color;
+        skyCtx.beginPath();
+        skyCtx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+        skyCtx.fill();
+        skyCtx.restore();
+      }
+
+      drawYejiRunner();
+    }
+
+    skyAnimId = requestAnimationFrame(stepSkyGame);
+  }
+
+  selectSkyGame("stars");
+
+  initJarUI();
+  initFridgeUI();
+  updateLoveCounters();
+  setInterval(updateLoveCounters, 1000);
+</script>
+  <div id="veggie-celebration-popup" class="veggie-celebration-popup">
+    <div class="veggie-celebration-card">🥦 WOW KUMAIN KA GULAY! 🥦</div>
+  </div>
+</body>
+</html>
